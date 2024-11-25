@@ -1,21 +1,41 @@
+// MISSION CONFIGS
 class Header {
 	gameType    = Sandbox;
 	minPlayers  = 1;
 	maxPlayers  = 1;
 };
 
+// About
 onLoadName       = "DAP: DYNAMIC ARTILLERY PIECES";
 author           = "thy";
 overviewPicture  = "images\thumb.jpg";	
 onLoadMission    = "Smart creation of fire-missions for Howitzers, MRL's and Mortars.";
-joinUnassigned   = 1;
-DisabledAI       = 1; 
 
+// Gameplay
+joinUnassigned      = 0;
+respawnButton       = 0;
+respawnDialog       = 0;
+debriefing          = 0;
+saving              = 0;
 
+// Debug
+enableDebugConsole  = 1;
+allowFunctionsLog   = 1;
 
+// Performance
+DisabledAI              = 1;
+minPlayerDistance       = 1000;
+corpseManagerMode       = 1;
+corpseLimit             = 5;
+corpseRemovalMinTime    = 300;
+corpseRemovalMaxTime    = 600;
+wreckManagerMode        = 1;
+wreckLimit              = 5;
+wreckRemovalMinTime     = 600;
+wreckRemovalMaxTime     = 1200;
 
-
-// ATTENCION: if you already have a description.ext file in your mission, just include the lines below in that file.
+// CBA MOD
+cba_settings_hasSettingsFile = 0;
 
 class cfgFunctions 
 {

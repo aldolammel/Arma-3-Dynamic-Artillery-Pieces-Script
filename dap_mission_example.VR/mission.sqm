@@ -8,7 +8,7 @@ class EditorData
 	toggles=1541;
 	class ItemIDProvider
 	{
-		nextID=490;
+		nextID=491;
 	};
 	class MarkerIDProvider
 	{
@@ -16,7 +16,7 @@ class EditorData
 	};
 	class LayerIndexProvider
 	{
-		nextID=37;
+		nextID=49;
 	};
 	class Camera
 	{
@@ -1095,7 +1095,7 @@ class Mission
 			name="DAP Script";
 			class Entities
 			{
-				items=4;
+				items=5;
 				class Item0
 				{
 					dataType="Layer";
@@ -3403,15 +3403,24 @@ class Mission
 				class Item3
 				{
 					dataType="Marker";
-					position[]={768,5,4096};
+					position[]={768,5,3584};
 					name="mkr_zeus_available";
 					text="   ZEUS AVAILABLE (PRESS 'Y' IN-GAME)";
 					type="mil_box";
 					id=488;
 				};
+				class Item4
+				{
+					dataType="Marker";
+					position[]={768,5,4096};
+					name="mkr_multiplayer_tip";
+					text="   PLAY > PLAY IN MULTIPLAYER > OK > Select one slot to test";
+					type="mil_box";
+					id=490;
+				};
 			};
 			id=415;
-			atlOffset=0.1382637;
+			atlOffset=0.069131851;
 		};
 		class Item5
 		{
