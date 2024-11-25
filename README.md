@@ -11,14 +11,35 @@ Video demo: soon.
 
 Video tutorials: soon, but subscribe to my channel now, https://youtube.com/@thy1984
 
-Documentation: soon (25th, today)
+Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 
 __
 
 ## SCRIPT DETAILS
 
-- No dependencies from other mods or scripts;
-- Soon (25th, today)
+**Per fire mission**
+- Real or virtual (Virtual is WIP)
+- The side that owns the fire mission;
+- Potential target sectors (Eden markers);
+- How much weaponry you want in the fire mission;
+- What caliber these weaponry will be (Light, Medium, Heavy, Super Heavy);
+- Ammunition type (HE, Cluster, Smoke, Flare etc);
+- Control the volume of rounds;
+- How many cycle repetitions;
+- Triggers that will trigger the fire mission (trigger activation, timer, kill/destruction).
+
+**Global settings**
+- Custom callsign for artillery side;
+- Which pieces can use CommandChat to report (On/Off)
+- Infinite ammunition (On/Off);
+- Fire mission areas visible on the player map (On/Off)  WIP
+- Custom cooldown between cycles of fire mission repetition;
+- Pre-defined whitelist of weaponry working (Arma, DLCs, RHS, CUP, etc);
+- Pre-defined whitelist of ammunition working (Arma, DLCs, RHS, CUP, etc);
+- Pre-defined blacklist of currently bugged vehicles;
+- Pre-defined blacklist of currently bugged ammunition;
+- Debug mode;
+- etc...
 
 __
 
