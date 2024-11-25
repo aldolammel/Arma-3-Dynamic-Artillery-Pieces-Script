@@ -1,0 +1,25 @@
+class Header {
+	gameType    = Sandbox;
+	minPlayers  = 1;
+	maxPlayers  = 1;
+};
+
+onLoadName       = "DAP: DYNAMIC ARTILLERY PIECES";
+author           = "thy";
+overviewPicture  = "images\thumb.jpg";	
+onLoadMission    = "Smart creation of fire-missions for Howitzers, MRL's and Mortars.";
+joinUnassigned   = 1;
+DisabledAI       = 1; 
+
+
+
+
+
+// ATTENCION: if you already have a description.ext file in your mission, just include the lines below in that file.
+
+class cfgFunctions 
+{
+	// DAP: DYNAMIC ARTILLERY PIECES v1.0
+	// Documentation: soon.
+	#include "DynamicArtilleryPieces\THY_DAP_functions.hpp"
+};
