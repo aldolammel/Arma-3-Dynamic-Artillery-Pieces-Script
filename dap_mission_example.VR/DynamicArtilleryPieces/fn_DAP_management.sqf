@@ -1,6 +1,6 @@
 // DAP: Dynamic Artillery Pieces v1
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_management.sqf
-// Documentation: soon.
+// Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
 
 // Runs only in server:
