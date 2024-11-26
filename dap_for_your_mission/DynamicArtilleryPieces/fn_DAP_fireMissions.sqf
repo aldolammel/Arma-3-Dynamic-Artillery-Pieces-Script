@@ -29,7 +29,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
         // _ammo_CLUSTER ............ Cluster ammo, greatest choice against infantry in trenches and forests.
         // _ammo_CLUSTER_MINE_AP .... Cluster dropping Anti-personnel-mines.
         // _ammo_CLUSTER_MINE_AT .... Cluster dropping Anti-tank-mines.
-        // _ammo_GUIDED ............. Commonly a HE ammunition with superior accurance.
+        // _ammo_GUIDED ............. Commonly a HE ammunition with superior accurancy.
         // _ammo_GUIDED_LASER ....... Commonly a HE ammunition with maximum accurance.
         // _ammo_SMOKE .............. Smoke ammo, recommended choice to preserve structures but blinding the enemy for a while.
         // _ammo_FLARE .............. Flare ammo, recommended choice to paint an area or bring temporary light in the dark.
