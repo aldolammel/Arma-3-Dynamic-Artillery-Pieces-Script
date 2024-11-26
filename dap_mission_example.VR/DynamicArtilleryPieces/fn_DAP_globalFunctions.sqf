@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1
+// DAP: Dynamic Artillery Pieces v1.1
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_globalFunctions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -272,7 +272,7 @@ THY_fnc_DAP_pieces_scanner = {
 	// Critical: careful because 'vehicles' command brings lot of trash along: https://community.bistudio.com/wiki/vehicles
 	_possiblePieces = vehicles select { count (crew _x) > 0 && toUpper (str _x) find (_prefix + _spacer) isNotEqualTo -1 };
 	// Debug message:
-	if DAP_debug_isOn then { systemChat format ["%1 Artillery Pieces found: %2 dropped on the map.", DAP_txtDebugHeader, count _possiblePieces] };
+	if DAP_debug_isOn then { systemChat format ["%1 Artillery-pieces found: %2 from DAP.", DAP_txtDebugHeader, count _possiblePieces] };
 	// Escape > If no _possiblePieces found:
 	if ( count _possiblePieces isEqualTo 0 ) exitWith {
 		// Warning message:
@@ -376,7 +376,7 @@ THY_fnc_DAP_marker_scanner = {
 	// Selecting the relevant markers:
 	_possibleMkrs = allMapMarkers select { toUpper _x find (_prefix + _spacer) isNotEqualTo -1 };
 	// Debug message:
-	if DAP_debug_isOn then { systemChat format ["%1 Markers found: %2 DAP markers of %3 dropped on the map.", DAP_txtDebugHeader, count _possibleMkrs, count allMapMarkers] };
+	if DAP_debug_isOn then { systemChat format ["%1 Artillery target-markers found: %2 from DAP.", DAP_txtDebugHeader, count _possibleMkrs] };
 	// Escape > If no _possibleMkrs found:
 	if ( count _possibleMkrs isEqualTo 0 ) exitWith {
 		// Warning message:
@@ -422,18 +422,19 @@ THY_fnc_DAP_marker_scanner = {
 		switch _tag do {
 			case "BLU": { 
 				_targetMkrsBLU pushBack _mkr;
-				if ( DAP_BLU_name isNotEqualTo "" ) then { _callsign = DAP_BLU_name } else { _callsign = _tag + " " + _callsign };
-				_mkr setMarkerText format ["%1 target %2", _callsign, _sector];
+				//if ( DAP_BLU_name isNotEqualTo "" ) then { _callsign = DAP_BLU_name } else { _callsign = _tag + " " + _callsign };
+				// Why simplest? when u got too much mkrs, u need to know what the mkr really do, needing to add 'Artillery' but w/ _callsign it was huge on screen.
+				_mkr setMarkerText format ["  %1 Artillery target-%2", _tag, _sector];
 			};
 			case "OPF": { 
 				_targetMkrsOPF pushBack _mkr;
-				if ( DAP_OPF_name isNotEqualTo "" ) then { _callsign = DAP_OPF_name } else { _callsign = _tag + " " + _callsign };
-				_mkr setMarkerText format ["%1 target %2", _callsign, _sector];
+				//if ( DAP_OPF_name isNotEqualTo "" ) then { _callsign = DAP_OPF_name } else { _callsign = _tag + " " + _callsign };
+				_mkr setMarkerText format ["  %1 Artillery target-%2", _tag, _sector];
 			};
 			case "IND": { 
 				_targetMkrsIND pushBack _mkr;
-				if ( DAP_IND_name isNotEqualTo "" ) then { _callsign = DAP_IND_name } else { _callsign = _tag + " " + _callsign };
-				_mkr setMarkerText format ["%1 target %2", _callsign, _sector];
+				//if ( DAP_IND_name isNotEqualTo "" ) then { _callsign = DAP_IND_name } else { _callsign = _tag + " " + _callsign };
+				_mkr setMarkerText format ["  %1 Artillery target-%2", _tag, _sector];
 			};
 		};
 	} forEach _possibleMkrs;
@@ -985,14 +986,14 @@ THY_fnc_DAP_building_firemission_team = {
 	// This function build up a list of the best pieces for a specific fire-mission, based on the fire-mission requirements.
 	// Returns _team: array. Return empty if nothing available.
 
-	params ["_fmMkrPos", "_side", "_tag", "_callsign", "_numRequested", "_caliber", "_magType", "_shouldReport"];
-	private ["_piecesCaliber", "_possibleMags", "_debugPurposes", "_team", "_candidates", "_candApprovedMags", "_ammo", "_finalists", "_txt1"];
+	params ["_fmMkrPos", "_side", "_tag", "_numRequested", "_caliber", "_magType", "_shouldReport"];
+	private ["_libraryCaliber", "_libraryMags", "_debugPurposes", "_team", "_candidates", "_candApprovedMags", "_ammo", "_finalists", "_txt1"];
 
 	// Escape:
 		// reserved space.
 	// Initial values:
-	_piecesCaliber  = [];
-	_possibleMags     = [];
+	_libraryCaliber   = [];
+	_libraryMags      = [];
 	_debugPurposes    = nil;
 	_team             = [];
 	_candidates       = [];
@@ -1003,13 +1004,13 @@ THY_fnc_DAP_building_firemission_team = {
 		// reserved space.
 	// Debug texts:
 	_txt1 = "Sir, we've NO artillery pieces anymore, even to a single fire-mission! You're on your own, over.";
-	// (SETP X/X) Selecting the Artillery Piece Caliber requested:
+	// (SETP 1/X) Based on the request, selecting only the specific caliber section from the Artillery-pieces library:
 	switch _caliber do {
-		case "ANY":        { _piecesCaliber = DAP_piecesCaliber_light + DAP_piecesCaliber_medium + DAP_piecesCaliber_heavy + DAP_piecesCaliber_superHeavy };
-		case "LIGHT":      { _piecesCaliber = DAP_piecesCaliber_light };
-		case "MEDIUM":     { _piecesCaliber = DAP_piecesCaliber_medium };
-		case "HEAVY":      { _piecesCaliber = DAP_piecesCaliber_heavy };
-		case "SUPERHEAVY": { _piecesCaliber = DAP_piecesCaliber_superHeavy };
+		case "ANY":        { _libraryCaliber = DAP_piecesCaliber_light + DAP_piecesCaliber_medium + DAP_piecesCaliber_heavy + DAP_piecesCaliber_superHeavy };
+		case "LIGHT":      { _libraryCaliber = DAP_piecesCaliber_light };
+		case "MEDIUM":     { _libraryCaliber = DAP_piecesCaliber_medium };
+		case "HEAVY":      { _libraryCaliber = DAP_piecesCaliber_heavy };
+		case "SUPERHEAVY": { _libraryCaliber = DAP_piecesCaliber_superHeavy };
 		default {
 			// Warning message:
 			systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid CALIBER. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
@@ -1019,16 +1020,16 @@ THY_fnc_DAP_building_firemission_team = {
 		};
 	};
 
-	// (SETP X/X) Selecting the requested ammunition type:
+	// (SETP 2/X) Based on the request, selecting only the specific ammo type section from the Magazines library:
 	switch _magType do {
-		case "HE":              { _possibleMags = DAP_mags_he };
-		case "CLUSTER":         { _possibleMags = DAP_mags_cluster };
-		case "CLUSTER_MINE_AP": { _possibleMags = DAP_mags_cluster_mine_ap };
-		case "CLUSTER_MINE_AT": { _possibleMags = DAP_mags_cluster_mine_at };
-		case "GUIDED":          { _possibleMags = DAP_mags_guided };
-		case "GUIDED_LASER":    { _possibleMags = DAP_mags_guided_laser };
-		case "SMOKE":           { _possibleMags = DAP_mags_smoke };
-		case "FLARE":           { _possibleMags = DAP_mags_flare };
+		case "HE":              { _libraryMags = DAP_mags_he };
+		case "CLUSTER":         { _libraryMags = DAP_mags_cluster };
+		case "CLUSTER_MINE_AP": { _libraryMags = DAP_mags_cluster_mine_ap };
+		case "CLUSTER_MINE_AT": { _libraryMags = DAP_mags_cluster_mine_at };
+		case "GUIDED":          { _libraryMags = DAP_mags_guided };
+		case "GUIDED_LASER":    { _libraryMags = DAP_mags_guided_laser };
+		case "SMOKE":           { _libraryMags = DAP_mags_smoke };
+		case "FLARE":           { _libraryMags = DAP_mags_flare };
 		default {
 			// Warning message:
 			systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid AMMUNITION. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
@@ -1038,12 +1039,12 @@ THY_fnc_DAP_building_firemission_team = {
 		};
 	};
 	
-	// (STEP X/X) Checking the current side pieces available (alive ones) and those with requested caliber:
+	// (STEP 3/X) Filtering for current side pieces those have the requested caliber:
 	switch _tag do {
 		case "BLU": {
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesBLU] call BIS_fnc_error; sleep 3;
+				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesBLU] call BIS_fnc_error; sleep 1;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesBLU = DAP_piecesBLU select { alive _x && alive (gunner _x) };
@@ -1062,14 +1063,14 @@ THY_fnc_DAP_building_firemission_team = {
 			// Debug:
 			if DAP_debug_isOn then { _debugPurposes = count DAP_piecesBLU };
 			// Checking the caliber:
-			{ if ( typeOf _x in _piecesCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesBLU;
+			{ if ( typeOf _x in _libraryCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesBLU;
 			// Escape > If no side pieces available:
 			if ( count _candidates isEqualTo 0 ) exitWith {};
 		};
 		case "OPF": { 
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesOPF] call BIS_fnc_error; sleep 3;
+				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesOPF] call BIS_fnc_error; sleep 1;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesOPF = DAP_piecesOPF select { alive _x && alive (gunner _x) };
@@ -1088,14 +1089,14 @@ THY_fnc_DAP_building_firemission_team = {
 			// Debug:
 			if DAP_debug_isOn then { _debugPurposes = count DAP_piecesOPF };
 			// Checking the caliber:
-			{ if ( typeOf _x in _piecesCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesOPF;
+			{ if ( typeOf _x in _libraryCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesOPF;
 			// Escape > If no side pieces available:
 			if ( count _candidates isEqualTo 0 ) exitWith {};
 		};
 		case "IND": {
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesIND] call BIS_fnc_error; sleep 3;
+				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesIND] call BIS_fnc_error; sleep 1;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesIND = DAP_piecesIND select { alive _x && alive (gunner _x) };
@@ -1114,7 +1115,7 @@ THY_fnc_DAP_building_firemission_team = {
 			// Debug:
 			if DAP_debug_isOn then { _debugPurposes = count DAP_piecesIND };
 			// Checking the caliber:
-			{ if ( typeOf _x in _piecesCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesIND;
+			{ if ( typeOf _x in _libraryCaliber ) then { _candidates pushBack _x } } forEach DAP_piecesIND;
 			// Escape > If no side pieces available:
 			if ( count _candidates isEqualTo 0 ) exitWith {};
 		};
@@ -1143,10 +1144,10 @@ THY_fnc_DAP_building_firemission_team = {
 		_team;
 	};
 
-	// (STEP X/X) Selecting pieces that fit with the requested ammo:
+	// (STEP 4/X) Filtering for those right-caliber-pieces those have the requested ammo type:
 	{  // forEach _candidates:
 		// Compars and stores only approved mags (if the _candidates got):
-		_candApprovedMags = _possibleMags arrayIntersect (getArtilleryAmmo [_x]);
+		_candApprovedMags = _libraryMags arrayIntersect (getArtilleryAmmo [_x]);
 		// Debug message:
 		if DAP_debug_isOn then { 
 			["%1 BUILDING %2 ARTILLERY TEAM > '%3' approved mag types: %4 = %5.", DAP_txtDebugHeader, _tag, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 3;
@@ -1169,7 +1170,7 @@ THY_fnc_DAP_building_firemission_team = {
 		};
 	} forEach _candidates;
 
-	// (STEP X/X) Selecting those with range and with that especific ammunition:
+	// (STEP 5/X) Selecting those right-caliber-and-ammo-type-pieces with range from the target:
 	_finalists = _finalists select { _fmMkrPos inRangeOfArtillery [[_x # 1], _x # 2] };  // _x # 0 = reserved space / _x # 1 = obj  /  _x # 2 = _ammo.
 	// Escape > no _finalists, abort:
 	if ( count _finalists isEqualto 0 ) exitWith {
@@ -1392,7 +1393,7 @@ THY_fnc_DAP_trigger = {
 	if !_isVirtual then {
 
 		// Building the fire-mission team:
-		_team = [_fmMkrPos, _side, _tag, _callsign, _numRequested, _caliber, _magType, _shouldReport] call THY_fnc_DAP_building_firemission_team;
+		_team = [_fmMkrPos, _side, _tag, _numRequested, _caliber, _magType, _shouldReport] call THY_fnc_DAP_building_firemission_team;
 		// Escape > No team available:
 		if ( count _team isEqualTo 0 ) then { breakTo "return" };
 		
@@ -1508,7 +1509,7 @@ THY_fnc_DAP_add_firemission = {
 	_fmTargetMkrs       = +(_fmTargetMkrs select { _x find (DAP_spacer + _fmTargetMkrsSector + DAP_spacer) isNotEqualTo -1 });
 
 	// TRIGGERS SECTION:
-	// Pull the trigger once ready:
+	// Pull the trigger once ready (it's opening a new thread!):
 	[false, _side, _tag, _callsign, _fmTargetMkrs, _fireSetup, _fireTriggers] spawn THY_fnc_DAP_trigger;
 	// CPU breather before check the next fire-mission or end the firemissions.sqf:
 	sleep DAP_fireMissionBreath;

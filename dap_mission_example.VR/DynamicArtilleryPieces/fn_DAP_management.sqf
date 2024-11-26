@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1
+// DAP: Dynamic Artillery Pieces v1.1
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_management.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -43,8 +43,8 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	DAP_fireMissionBreath = 10;     // In seconds, Time you give to the server reads each fire-mission. Never lower than 2. Default: 10;
 	DAP_wait              = 1;      // In seconds, If you need to make DAP waits more for other scripts load first, set a delay in seconds. Default: 5;
 
-// Known Artillery Pieces:
-	// Below, almost or all howitzers, multiple rocket launchers and mortars from: Arma 3, DLC Apex, DLC Contact, DLC Western Sahara, DLC Reaction Forces, DLC Global Mobilization, Mod RHS, and Mod CUP. Fell free to add more, respecting their classes and subclasses. Crucial to check this in DAP documentation.
+// Library of Known Artillery Pieces:
+	// Below, all howitzers, multiple rocket launchers and mortars from: Arma 3, DLC Apex, DLC Contact, DLC Tanks, CDLC Western Sahara, CDLC Reaction Forces, CDLC Global Mobilization, CDLC Expeditionary Forces, Mod RHS, and Mod CUP. Fell free to add more, respecting their classes and subclasses. Check DAP documentation link on this file header.
 	DAP_knownPieces_howitzer = [
 		// Howitzer Light (crucial: < 123mm)
 		["LIGHT",      ["RHS_M119_D","RHS_M119_WD"]],
@@ -63,11 +63,11 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 		// Multiple Rocket Launcher Heavy (crucial: >= 160mm, < 300mm)
 		["HEAVY",      ["rhsusf_M142_usmc_WD","rhsusf_M142_usarmy_WD","rhsusf_M142_usarmy_D","CUP_B_M270_DPICM_BAF_WOOD","CUP_B_M270_DPICM_BAF_DES","CUP_B_M270_HE_BAF_DES","CUP_B_M270_HE_BAF_WOOD","CUP_B_M270_DPICM_HIL","CUP_B_M270_HE_HIL","CUP_B_M270_DPICM_USA","CUP_B_M270_HE_USA","CUP_B_M270_DPICM_USMC","CUP_B_M270_HE_USMC","CUP_I_M270_DPICM_AAF","CUP_I_M270_HE_AAF","CUP_I_M270_DPICM_RACS","CUP_I_M270_HE_RACS"]],
 		// Multiple Rocket Launcher Super Heavy (crucial: >= 300mm)
-		["SUPERHEAVY", ["I_Truck_02_MRL_F","I_E_Truck_02_MRL_F","B_MBT_01_mlrs_F","B_T_MBT_01_mlrs_F","rhs_9k79","rhs_9k79_K","rhs_9k79_B"]]
+		["SUPERHEAVY", ["I_Truck_02_MRL_F","I_E_Truck_02_MRL_F","B_MBT_01_mlrs_F","B_T_MBT_01_mlrs_F","EF_B_MBT_01_mlrs_MJTF_Wdl","EF_B_MBT_01_mlrs_MJTF_Des","rhs_9k79","rhs_9k79_K","rhs_9k79_B"]]
 	];
 	DAP_knownPieces_mortar = [
 		// Mortar Light (crucial: < 123mm)
-		["LIGHT",      ["B_G_Mortar_01_F","B_Mortar_01_F","B_D_Mortar_01_lxWS","B_T_Mortar_01_F","B_Tura_Mortar_lxWS","O_Mortar_01_F","O_G_Mortar_01_F","O_SFIA_Mortar_lxWS","O_Tura_Mortar_lxWS","I_Mortar_01_F","I_G_Mortar_01_F","I_E_Mortar_01_F","I_Tura_Mortar_lxWS","B_D_APC_Wheeled_01_mortar_lxWS","B_APC_Wheeled_01_mortar_lxWS","B_T_APC_Wheeled_01_mortar_lxWS","B_D_CTRG_CommandoMortar_RF","B_G_CommandoMortar_RF","B_CommandoMortar_RF","O_CommandoMortar_RF","O_G_CommandoMortar_RF","I_CommandoMortar_RF","I_G_CommandoMortar_RF","I_E_CommandoMortar_RF","rhssaf_army_m252","rhsgref_cdf_reg_M252","rhssaf_army_o_m252","RHS_M252_WD","RHS_M252_USMC_D","RHS_M252_USMC_WD","rhsgref_cdf_b_reg_M252","rhs_2b14_82mm_vmf","rhs_2b14_82mm_vdv","RHS_M252_D","CUP_I_M252_RACS","CUP_B_M252_HIL","CUP_B_M252_US","CUP_B_M252_USMC","CUP_B_L16A2_BAF_DDPM","CUP_B_L16A2_BAF_MPT","CUP_B_L16A2_BAF_WDL","rhs_2b14_82mm_msv","rhsgref_tla_g_2b14","rhsgref_nat_2b14","rhsgref_ins_g_2b14","rhsgref_tla_2b14","rhsgref_ins_2b14","CUP_I_2b14_82mm_TK_GUE","CUP_I_2b14_82mm_NAPA","CUP_B_2b14_82mm_AFU","CUP_B_2b14_82mm_ACR","CUP_B_2b14_82mm_CDF"]],
+		["LIGHT",      ["B_G_Mortar_01_F","B_Mortar_01_F","B_D_Mortar_01_lxWS","B_T_Mortar_01_F","B_Tura_Mortar_lxWS","O_Mortar_01_F","O_G_Mortar_01_F","O_SFIA_Mortar_lxWS","O_Tura_Mortar_lxWS","I_Mortar_01_F","I_G_Mortar_01_F","I_E_Mortar_01_F","I_Tura_Mortar_lxWS","B_D_APC_Wheeled_01_mortar_lxWS","B_APC_Wheeled_01_mortar_lxWS","B_T_APC_Wheeled_01_mortar_lxWS","B_D_CTRG_CommandoMortar_RF","B_G_CommandoMortar_RF","B_CommandoMortar_RF","O_CommandoMortar_RF","O_G_CommandoMortar_RF","I_CommandoMortar_RF","I_G_CommandoMortar_RF","I_E_CommandoMortar_RF","EF_B_Mortar_01_MJTF_Wdl","EF_B_Mortar_01_MJTF_Des","rhssaf_army_m252","rhsgref_cdf_reg_M252","rhssaf_army_o_m252","RHS_M252_WD","RHS_M252_USMC_D","RHS_M252_USMC_WD","rhsgref_cdf_b_reg_M252","rhs_2b14_82mm_vmf","rhs_2b14_82mm_vdv","RHS_M252_D","CUP_I_M252_RACS","CUP_B_M252_HIL","CUP_B_M252_US","CUP_B_M252_USMC","CUP_B_L16A2_BAF_DDPM","CUP_B_L16A2_BAF_MPT","CUP_B_L16A2_BAF_WDL","rhs_2b14_82mm_msv","rhsgref_tla_g_2b14","rhsgref_nat_2b14","rhsgref_ins_g_2b14","rhsgref_tla_2b14","rhsgref_ins_2b14","CUP_I_2b14_82mm_TK_GUE","CUP_I_2b14_82mm_NAPA","CUP_B_2b14_82mm_AFU","CUP_B_2b14_82mm_ACR","CUP_B_2b14_82mm_CDF"]],
 		// Mortar Medium (crucial: >= 123mm, < 160mm)
 		["MEDIUM",     ["CUP_B_M1129_MC_MK19_Desert","CUP_B_M1129_MC_MK19_Woodland","B_TwinMortar_RF","B_T_TwinMortar_RF","I_TwinMortar_RF"]],
 		// Mortar Heavy (crucial: <= 160mm, < 300mm)
@@ -78,8 +78,8 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	// These vehicles and equipments have features that meant to be part of DAP but for any reason are bugged or conflicting DAP dynamics:
 	DAP_pieces_forbidden = ["CUP_B_FV432_Mortar","gm_ge_army_kat1_463_mlrs","gm_pl_army_ural375d_mlrs","gm_gc_army_ural375d_mlrs","gm_pl_army_2p16","gm_gc_army_2p16","rhsgref_cdf_b_reg_d30_at","rhsgref_ins_d30_at","rhs_D30_at_msv","rhs_D30_at_vdv","rhs_D30_at_vmf","rhsgref_cdf_reg_d30_at","rhsgref_ins_g_d30_at","rhsgref_nat_d30_at","rhs_2s3_at_tv"];
 
-// Known Magazines (Ammunition):
-	// Below, almost or all magazines (ammunition) used by artillery and mortar in: Arma 3, DLC Apex, DLC Contact, DLC Western Sahara, DLC Reaction Forces, DLC Global Mobilization, Mod RHS, and Mod CUP. Fell free to add more, respecting their types and what will use them. Check DAP documentation.
+// Library of Known Magazines (ammo):
+	// Below, almost or all magazines used by artillery and mortar in: Arma 3, DLC Apex, DLC Contact, DLC Tanks, CDLC Western Sahara, CDLC Reaction Forces, CDLC Global Mobilization, CDLC Expeditionary Forces, Mod RHS, and Mod CUP. Fell free to add more, respecting their types and what will use them. Check DAP documentation link on this file header.
 	DAP_knownMagazines_howitzer = [
 		["HE",              ["32Rnd_155mm_Mo_shells","32Rnd_155mm_Mo_shells_O","gm_28Rnd_122x447mm_he_of462","rhs_mag_155mm_m795_28","rhs_mag_3of56_10","RHS_mag_m1_he_12","rhs_mag_3of56_35"]],
 		["GUIDED",          ["2Rnd_155mm_Mo_guided","4Rnd_155mm_Mo_guided","4Rnd_155mm_Mo_guided_O"]],
@@ -254,20 +254,20 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_BLU_isOn && count DAP_targetMrksBLU > 0 && count DAP_piecesBLU > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 target-marker(s) and %4 piece(s) available.",
-			DAP_txtDebugHeader, DAP_BLU_name, count DAP_targetMrksBLU, count DAP_piecesBLU];
+			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			DAP_txtDebugHeader, DAP_BLU_name, count DAP_piecesBLU, count DAP_targetMrksBLU];
 		};
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_OPF_isOn && count DAP_targetMrksOPF > 0 && count DAP_piecesOPF > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 target-marker(s) and %4 piece(s) available.",
-			DAP_txtDebugHeader, DAP_OPF_name, count DAP_targetMrksOPF, count DAP_piecesOPF];
+			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			DAP_txtDebugHeader, DAP_OPF_name, count DAP_piecesOPF, count DAP_targetMrksOPF];
 		};
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_IND_isOn && count DAP_targetMrksIND > 0 && count DAP_piecesIND > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 target-marker(s) and %4 piece(s) available.",
-			DAP_txtDebugHeader, DAP_IND_name, count DAP_targetMrksIND, count DAP_piecesIND];
+			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			DAP_txtDebugHeader, DAP_IND_name, count DAP_piecesIND, count DAP_targetMrksIND];
 		};
 	};
 	// Debug monitor looping:
