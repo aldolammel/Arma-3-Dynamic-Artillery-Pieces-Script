@@ -428,12 +428,10 @@ THY_fnc_DAP_marker_scanner = {
 			};
 			case "OPF": { 
 				_targetMkrsOPF pushBack _mkr;
-				//if ( DAP_OPF_name isNotEqualTo "" ) then { _callsign = DAP_OPF_name } else { _callsign = _tag + " " + _callsign };
 				_mkr setMarkerText format ["  %1 Artillery target-%2", _tag, _sector];
 			};
 			case "IND": { 
 				_targetMkrsIND pushBack _mkr;
-				//if ( DAP_IND_name isNotEqualTo "" ) then { _callsign = DAP_IND_name } else { _callsign = _tag + " " + _callsign };
 				_mkr setMarkerText format ["  %1 Artillery target-%2", _tag, _sector];
 			};
 		};
@@ -987,7 +985,7 @@ THY_fnc_DAP_building_firemission_team = {
 	// Returns _team: array. Return empty if nothing available.
 
 	params ["_fmMkrPos", "_side", "_tag", "_numRequested", "_caliber", "_magType", "_shouldReport"];
-	private ["_libraryCaliber", "_libraryMags", "_debugPurposes", "_team", "_candidates", "_candApprovedMags", "_ammo", "_finalists", "_txt1"];
+	private ["_libraryCaliber", "_libraryMags", "_debugPurposes", "_team", "_candidates", "_candApprovedMags", "_ammo", "_finalists", "_bestOverall", "_txt1"];
 
 	// Escape:
 		// reserved space.
@@ -1000,20 +998,21 @@ THY_fnc_DAP_building_firemission_team = {
 	_candApprovedMags = [];
 	_ammo             = "";
 	_finalists        = [];
+	_bestOverall      = [];
 	// Declarations:
 		// reserved space.
 	// Debug texts:
-	_txt1 = "Sir, we've NO artillery pieces anymore, even to a single fire-mission! You're on your own, over.";
+	_txt1 = "Sir, we've NO artillery pieces alive on the field! You're on your own, over.";
 	// (SETP 1/X) Based on the request, selecting only the specific caliber section from the Artillery-pieces library:
 	switch _caliber do {
-		case "ANY":        { _libraryCaliber = DAP_piecesCaliber_light + DAP_piecesCaliber_medium + DAP_piecesCaliber_heavy + DAP_piecesCaliber_superHeavy };
+		case "COMBINED":   { _libraryCaliber = DAP_piecesCaliber_light + DAP_piecesCaliber_medium + DAP_piecesCaliber_heavy + DAP_piecesCaliber_superHeavy };
 		case "LIGHT":      { _libraryCaliber = DAP_piecesCaliber_light };
 		case "MEDIUM":     { _libraryCaliber = DAP_piecesCaliber_medium };
 		case "HEAVY":      { _libraryCaliber = DAP_piecesCaliber_heavy };
 		case "SUPERHEAVY": { _libraryCaliber = DAP_piecesCaliber_superHeavy };
 		default {
 			// Warning message:
-			systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid CALIBER. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
+			systemChat format ["%1 ASSEMBLING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid CALIBER. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
 			DAP_txtWarnHeader, _tag]; sleep 5;
 			// Return:
 			breakTo "return";
@@ -1032,7 +1031,7 @@ THY_fnc_DAP_building_firemission_team = {
 		case "FLARE":           { _libraryMags = DAP_mags_flare };
 		default {
 			// Warning message:
-			systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid AMMUNITION. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
+			systemChat format ["%1 ASSEMBLING %2 ARTILLERY TEAM > At least one %2 fire-mission is using an invalid AMMUNITION. Check the 'fn_DAP_management.sqf' file. This fire-mission was aborted.", 
 			DAP_txtWarnHeader, _tag]; sleep 5;
 			// Return:
 			breakTo "return";
@@ -1044,7 +1043,7 @@ THY_fnc_DAP_building_firemission_team = {
 		case "BLU": {
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesBLU] call BIS_fnc_error; sleep 1;
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > %3 artillery-piece(s) to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesBLU] call BIS_fnc_error; sleep 3;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesBLU = DAP_piecesBLU select { alive _x && alive (gunner _x) };
@@ -1053,8 +1052,8 @@ THY_fnc_DAP_building_firemission_team = {
 			// Escape > If no side pieces available:
 			if ( count DAP_piecesBLU isEqualTo 0 ) then {
 				// Side command message:
-				if ( _shouldReport || DAP_debug_isOn ) then { 
-					[_side, "HQ"] commandChat _txt1;
+				if _shouldReport then { 
+					[_side, "BASE"] commandChat _txt1;
 					sleep 3;
 				};
 				// Return:
@@ -1070,7 +1069,7 @@ THY_fnc_DAP_building_firemission_team = {
 		case "OPF": { 
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesOPF] call BIS_fnc_error; sleep 1;
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > %3 artillery-piece(s) to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesOPF] call BIS_fnc_error; sleep 3;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesOPF = DAP_piecesOPF select { alive _x && alive (gunner _x) };
@@ -1079,8 +1078,8 @@ THY_fnc_DAP_building_firemission_team = {
 			// Escape > If no side pieces available:
 			if ( count DAP_piecesOPF isEqualTo 0 ) then {
 				// Side command message:
-				if ( _shouldReport || DAP_debug_isOn ) then { 
-					[_side, "HQ"] commandChat _txt1;
+				if _shouldReport then { 
+					[_side, "BASE"] commandChat _txt1;
 					sleep 3;
 				};
 				// Return:
@@ -1096,7 +1095,7 @@ THY_fnc_DAP_building_firemission_team = {
 		case "IND": {
 			// Debug message:
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > %3 artillery-pieces to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesIND] call BIS_fnc_error; sleep 1;
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > %3 artillery-piece(s) to valuation...", DAP_txtDebugHeader, _tag, count DAP_piecesIND] call BIS_fnc_error; sleep 3;
 			};
 			// Basic valuation and update of side pieces available:
 			DAP_piecesIND = DAP_piecesIND select { alive _x && alive (gunner _x) };
@@ -1105,8 +1104,8 @@ THY_fnc_DAP_building_firemission_team = {
 			// Escape > If no side pieces available:
 			if ( count DAP_piecesIND isEqualTo 0 ) then {
 				// Side command message:
-				if ( _shouldReport || DAP_debug_isOn ) then { 
-					[_side, "HQ"] commandChat _txt1;
+				if _shouldReport then { 
+					[_side, "BASE"] commandChat _txt1;
 					sleep 3;
 				};
 				// Return:
@@ -1122,7 +1121,7 @@ THY_fnc_DAP_building_firemission_team = {
 	};  // switch _tag ends.
 	// Debug message:
 	if DAP_debug_isOn then {[
-		"%1 BUILDING %2 ARTILLERY TEAM > From %3 available, %4 have the requested caliber (%5).",
+		"%1 ASSEMBLING %2 ARTILLERY TEAM > From %3 in the field, %4 have the requested caliber (%5).",
 		DAP_txtDebugHeader,
 		_tag,
 		_debugPurposes,
@@ -1130,13 +1129,13 @@ THY_fnc_DAP_building_firemission_team = {
 		_caliber
 		] call BIS_fnc_error; sleep 3;
 	};
-	// Escape > If no side pieces available:
+	// Escape > If no side candidate-pieces available:
 	if ( count _candidates isEqualTo 0 ) exitWith {
 		// Side command message:
-		if ( _shouldReport || DAP_debug_isOn ) then { 
-			[_side, "HQ"] commandChat "Sir, unfortunately our artillery pieces DIDN'T fit the requirements for this fire-mission, over.";
+		if _shouldReport then { 
+			[_side, "BASE"] commandChat "Sir, unfortunately our artillery DON'T fit the BASIC requirements for the planned fire-mission that was supposed to take place now, over.";
 			if DAP_debug_isOn then {
-				["%1 BUILDING %2 ARTILLERY TEAM > What were the requirements: %3 requested piece(s) | Caliber = %4 | Ammo = %5.", DAP_txtDebugHeader, _tag, _numRequested, _caliber, _magType] call BIS_fnc_error;
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > Requirements: %3 requested piece(s) | Caliber = %4 | Ammo = %5.", DAP_txtDebugHeader, _tag, _numRequested, _caliber, _magType] call BIS_fnc_error;
 			};
 			sleep 3;
 		};
@@ -1148,80 +1147,99 @@ THY_fnc_DAP_building_firemission_team = {
 	{  // forEach _candidates:
 		// Compars and stores only approved mags (if the _candidates got):
 		_candApprovedMags = _libraryMags arrayIntersect (getArtilleryAmmo [_x]);
-		// Debug message:
-		if DAP_debug_isOn then { 
-			["%1 BUILDING %2 ARTILLERY TEAM > '%3' approved mag types: %4 = %5.", DAP_txtDebugHeader, _tag, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 3;
-		};
 		// One or more ammo options:
-		if ( count _candApprovedMags >= 1 ) then {
+		if ( count _candApprovedMags > 0 ) then {
+			// Debug message:
+			if ( DAP_debug_isOn && count _candApprovedMags > 1 ) then { 
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > '%3' approved mag types: %4 = %5. DAP will select randomly one of them.", DAP_txtDebugHeader, _tag, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 3;
+			};
 			// Selecting the ammo:
 			_ammo = selectRandom _candApprovedMags;
 			// Building the array to receive all data needed for _team:
 			_finalists append [[nil, _x, _ammo]];
-		// No requested ammo available:
-		} else {
-			// Side command message:
-			if ( _shouldReport || DAP_debug_isOn ) then {
-				[_side, "HQ"] commandChat "Sir, our artillery pieces DON'T meet the AMMUNITION specifications for this fire-mission, over.";
-				// Debug message:
-				if DAP_debug_isOn then { systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > %3 piece(s) requested with '%4' ammo type.", DAP_txtDebugHeader, _tag, _numRequested, _magType] };
-				sleep 3;
-			};
 		};
 	} forEach _candidates;
-
-	// (STEP 5/X) Selecting those right-caliber-and-ammo-type-pieces with range from the target:
-	_finalists = _finalists select { _fmMkrPos inRangeOfArtillery [[_x # 1], _x # 2] };  // _x # 0 = reserved space / _x # 1 = obj  /  _x # 2 = _ammo.
-	// Escape > no _finalists, abort:
-	if ( count _finalists isEqualto 0 ) exitWith {
+	// Escape > If no side finalist-pieces available:
+	if ( count _finalists isEqualTo 0 ) exitWith {
 		// Side command message:
-		if ( _shouldReport || DAP_debug_isOn ) then {
-			[_side, "HQ"] commandChat "Sir, our artillery piece HAS NO RANGE for this fire-mission, over.";
+		if _shouldReport then { 
+			[_side, "BASE"] commandChat format [
+				"Sir, although our artillery has %1 the AMMO-TYPE requested (%2) for the planned fire-mission that was supposed to take place now, over.",
+				if ( count _candidates > 8 ) then {"MANY pieces with the right caliber, they DON'T HAVE"} else {
+					if ( count _candidates > 1 ) then {"a FEW pieces with the right caliber, they DON'T HAVE"} else {"ONLY ONE piece with the right caliber, it DOESN'T HAVE"};
+				},
+				_magType
+			];
+			if DAP_debug_isOn then {
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > Requirements: %3 requested piece(s) | Caliber = %4 | Ammo = %5.", DAP_txtDebugHeader, _tag, _numRequested, _caliber, _magType] call BIS_fnc_error;
+			};
 			sleep 3;
 		};
 		// Return:
 		_team;
 	};
-	// _finalists has the number of pieces requested:
-	if ( count _finalists >= _numRequested ) then {
+
+	// (STEP 5/X) Selecting those right-caliber-and-ammo-type-pieces with range from the target:
+	_bestOverall = _finalists select { _fmMkrPos inRangeOfArtillery [[_x # 1], _x # 2] };  // _x # 0 = reserved space / _x # 1 = obj  /  _x # 2 = _ammo.
+	// Escape > no _finalists, abort:
+	if ( count _bestOverall isEqualto 0 ) exitWith {
+		// Side command message:
+		if _shouldReport then {
+			[_side, "BASE"] commandChat format [
+				"Sir, even with %1 RANGE for the planned fire-mission that was supposed to take place now, over.",
+				if ( count _finalists > 1 ) then {"SOME PIECES of the requested caliber and ammo-type, they DON'T HAVE"} else {"A PIECE of the requested caliber and ammo-type, it HAS NO"}
+			];
+			if DAP_debug_isOn then {
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > Requirements: %3 requested piece(s) | Caliber = %4 | Ammo = %5.", DAP_txtDebugHeader, _tag, _numRequested, _caliber, _magType] call BIS_fnc_error;
+			};
+			sleep 3;
+		};
+		// Return:
+		_team;
+	};
+	// _bestOverall needs define its leader/closest from the target:
+	if ( count _bestOverall >= 2 ) then {
 		// Build and array (_team) with another array in:
-		// 1st element: distance between piece and the target-marker,
-		// 2nd element: piece (object) itself,
-		// 3rd element: selected ammo.
-		// E.g. [23423e.05+3, dap_1, "12Rnd_HE_example"]
-		_team = _finalists apply {
+			// 1st element: distance between piece and the target-marker,
+			// 2nd element: piece (object) itself,
+			// 3rd element: selected ammo.
+			// E.g. [23423e.05+3, dap_1, "12Rnd_HE_example"]
+		_team = _bestOverall apply {
 			[
 				// Distance:
-				// Important, if specific caliber, always consider the real distance, otherwise it creates a fake distance (0-10) to randomize the piece choices during the "sort" and avoid the sort select only one caliber type.
-				if ( _caliber isNotEqualTo "ANY") then { _fmMkrPos distanceSqr (_x # 1) } else { random 11 },
+				// Important, if specific caliber, always consider the real distance, otherwise it creates a fake distance (0-500) to randomize the piece choices during the "sort" and avoid the sort select only one caliber type.
+				if ( _caliber isNotEqualTo "COMBINED") then { _fmMkrPos distanceSqr (_x # 1) } else { random 501 },
 				// Piece:
 				_x # 1,
 				// Ammo:
 				_x # 2
 			];
 		};
-		// Sort the _team where the first element is the closest one from the target:
+		// Sort the _team where the first element is the closest one from the target (and DAP will deal with it as the fire-mission leader later):
 		_team sort true;
-		// Resize the _team only for what was requested:
-		_team resize _numRequested;
+		// Resize the _team only for what was requested, if appliable:
+		if ( count _team > _numRequested ) then {_team resize _numRequested};
 
 		// WIP: Booking the piece busy with a fire-mission!
 		// xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 		if DAP_debug_isOn then {
-			["%1 BUILDING %2 ARTILLERY TEAM > Successfully done! | Perfect for mission = %3 | Let's use the requested = %4.", DAP_txtDebugHeader, _tag, count _finalists, count _team] call BIS_fnc_error;
+			["%1 ASSEMBLING %2 ARTILLERY TEAM > Successfully done! | Perfect for mission = %3 | Let's use the requested = %4.", DAP_txtDebugHeader, _tag, count _bestOverall, count _team] call BIS_fnc_error;
 			sleep 3;
 		};
 	// _team has not enough number of pieces requested, take all those we got:
 	} else {
 		// Prepare to return:
-		_team = _finalists;
+		_team = _bestOverall;
 		// Side command message:
-		if ( _shouldReport || DAP_debug_isOn ) then {
-			[_side, "HQ"] commandChat format ["We will %1, but the fire-mission will take place, sir, over.",
+		if _shouldReport then {
+			[_side, "BASE"] commandChat format ["We will %1, but the fire-mission will take place now as planned, sir! Over.",
 			if (!(_magType in ["FLARE","SMOKE"])) then {"hammer the position with LESS power as planned"} else {if (_magType isEqualTo "SMOKE") then {"NOT blind the position as planned"} else {"NOT paint the sky as planned"}}];
 			// Debug message:
-			if DAP_debug_isOn then { systemChat format ["%1 BUILDING %2 ARTILLERY TEAM > %3 piece(s) requested, released only %4.", DAP_txtDebugHeader, _tag, _numRequested, count _team] };
+			if DAP_debug_isOn then {
+				["%1 ASSEMBLING %2 ARTILLERY TEAM > Requirements: %3 requested piece(s), released %4 with: Caliber = %5 | Ammo-type = %6",
+				DAP_txtDebugHeader, _tag, _numRequested, count _team, _caliber, _magType] call BIS_fnc_error; 
+			};
 			sleep 3;
 		};
 	};
@@ -1231,34 +1249,108 @@ THY_fnc_DAP_building_firemission_team = {
 };
 
 
+THY_fnc_VO_isRearmNeeded = {
+	// This function (from my script 'Vehicles Overhauling') checks the mag capacity and how much ammo still remains within.
+	// Returns _isRearmNeeded bool.
+	
+	params ["_piece"];
+	private ["_isRearmNeeded", /*"_gunnerWeapons", "_hasGunnerNoWeapon", "_notWeaponWords", "_turretPath",*/ "_pieceMagsStr", "_pieceMagDetail", "_ammoName", "_ammoInMag", "_capacityMag"];
+
+	_isRearmNeeded        = false;
+	//_gunnerWeapons        = _piece weaponsTurret [0];
+	//_hasGunnerNoWeapon    = false;
+	//_notWeaponWords       = ["horn", "flare"];  // add here the key-word that indicates "the ammo name" is NOT an ammo.
+	
+	// Extra debug for rearming:
+	/* if DAP_debug_isOn then {
+		_turretPath = [[-1], [0], [1], [0,0], [0,1], [1,0]];  // https://community.bistudio.com/wiki/Turret_Path
+		{ systemChat format ["%1 Piece turret path %2 = %3", DAP_txtDebugHeader, _x, _piece weaponsTurret _x]; sleep 2 } forEach _turretPath;
+	}; */
+	
+	// Check if the turrets are not just a horn or other stuff in _notWeaponWords:
+	/* if ( count _gunnerWeapons <= 1 ) then {
+		if ( count _gunnerWeapons isEqualTo 0 ) exitWith { _hasGunnerNoWeapon = true };
+		{
+			_hasGunnerNoWeapon = [_x, (_gunnerWeapons # 0), false] call BIS_fnc_inString;
+			if _hasGunnerNoWeapon exitWith {};
+		} forEach _notWeaponWords;
+	}; 
+
+	// Exit if the vehicle has NO weaponry for gunner:
+	if _hasGunnerNoWeapon exitWith {
+		if DAP_debug_isOn then { systemChat format ["%1 %2 has NO weaponry, then rearm IS NOT needed.", DAP_txtDebugHeader, _piece]; sleep 2 };
+		_isRearmNeeded;
+	};*/
+	
+	_pieceMagsStr = magazinesDetail _piece;  // "120mm (2/20)[id/cr:10000011/0]".
+
+	if ( count _pieceMagsStr > 0 ) then {
+		{
+			_pieceMagDetail = _x splitString "([]/:)";  // ["120mm", "2", "20", "id", "cr", "10000011", "0"]
+			_ammoName = _pieceMagDetail # 0;
+			reverse _pieceMagDetail;  // ["0", "10000011", "cr", "id", "20", "2", "120mm"] coz the current ammo and ammo capacity don't change their index when reversed.
+			//systemChat str _pieceMagDetail;  // Extra debug: checking the index of mag details.
+			_ammoInMag = parseNumber (_pieceMagDetail # 5);  // string "2" convert to number 2.
+			_capacityMag = parseNumber (_pieceMagDetail # 4);  // string "20" convert to number 20.
+	
+			// Checking if rearm is needed:
+			if ( _ammoInMag < (_capacityMag / 4) ) exitWith {
+				if DAP_debug_isOn then {
+					systemChat format ["%1 %2 Magazine [%3]: %4 ammo of %5 capacity. Rearm is needed!", DAP_txtDebugHeader, _piece, _ammoName, _ammoInMag, _capacityMag]; sleep 0.5;
+				};
+				_isRearmNeeded = true;
+			};
+		} forEach _pieceMagsStr;
+
+	} else {
+		// When the armed-vehicle has NO ammo-capacity (0% ammunition in its attributes) it will force the vehicle to rearm:
+		_isRearmNeeded = true;
+	};
+	_isRearmNeeded // Returning...
+};
+
+
 THY_fnc_DAP_firing = {
 	// This function just control the firing of the fire-mission. Once it's finished, this thread/spawn is done.
 	// Returns nothing.
 
-	params ["_side", "_callsign", "_cycles", "_piece", "_fmMkrPos", "_magType", "_ammo", "_rounds", "_teamCooldown", "_shouldReport"];
-	//private ["", "", ""];
+	params ["_pieceLeader", "_side", "_cycles", "_piece", "_fmMkrPos", "_magType", "_ammo", "_rounds", "_teamCooldown", "_shouldReport"];
+	//private [""];
 
 	// Initial values:
 		// reserved space.
+	// Declarations:
+		// reserved space.
 	// Side command message:
-	if ( _shouldReport && alive _piece && alive (gunner _piece) ) then {   // WIP: I should improve this!
-		_piece commandChat format [
-			"Fire-mission on the way ( ~%1 secs %2 ).",
-			round (_piece getArtilleryETA [_fmMkrPos, _ammo]),  // ETA (Estimated Time of Arrival)
-			if ( _magType isNotEqualTo "FLARE" ) then {"to impact"} else {"to light up"}
-			// WIP the distance between fire position and the player leader: round (_fmMkrPos distance (getPos player))
-		];
-		// Breath before take some action:
-		sleep 2;
+	if ( _shouldReport && _piece isEqualTo _pieceLeader ) then {
+		if ( alive _pieceLeader && alive (gunner _pieceLeader) ) then {
+			_pieceLeader commandChat format [
+				"Fire-mission on the way. Prepare %1 in %2 secs.",
+				if ( _magType isNotEqualTo "FLARE" ) then {"to impact"} else {"to light up"},
+				round (_pieceLeader getArtilleryETA [_fmMkrPos, _ammo]) + 2  // ETA (Estimated Time of Arrival) + next sleep time.
+				// WIP the distance between fire position and the player leader: round (_fmMkrPos distance (getPos player))
+			];
+			// Breath before take some action:
+			sleep 2;
+		};
 	};
 	// Humanizing/desynchronizing the firing from multiple sources:
-	sleep selectRandom [0.25, 0.85, 1.25];
-	// Firing:
-	while { _cycles > 0 && alive _piece && alive (gunner _piece) } do {  // WIP: I should improve this!
+	sleep selectRandom [0.26, 0.41, 0.63, 0.83, 1.09, 1.27, 1.49, 1.63, 1.96];
+	// Firing if has cycle, the piece is alive, the gunner is alive, and there's ammunition in main gun:
+	while { _cycles > 0 && alive _piece && alive (gunner _piece) && !([_piece] call THY_fnc_VO_isRearmNeeded) } do {
 		// Control:
 		_cycles = _cycles - 1;
+		// Additional and shortest humanizing/desynchronizing each new cycle:
+		sleep selectRandom [0, 0.26, 0.47, 0.79, 1.03];
 		// Fire:
 		_piece doArtilleryFire [_fmMkrPos, _ammo, _rounds];
+		// Wait the cycle be complete or the piece is neutralized or out of ammo:
+		waitUntil { sleep 5; unitReady _piece || !alive _piece || !canFire _piece || [_piece] call THY_fnc_VO_isRearmNeeded };
+		// Side command message:
+		if ( _shouldReport && _piece isEqualTo _pieceLeader && alive _pieceLeader && alive (gunner _pieceLeader) && _cycles > 0 ) then {
+			// Side command message:
+			_pieceLeader commandChat format ["Stand by for the next rounds cycle in %1 seconds, sir.", round _teamCooldown];
+		};
 		// Cycle cooldown:
 		sleep _teamCooldown;
 		// Rearming automatically:
@@ -1268,14 +1360,34 @@ THY_fnc_DAP_firing = {
 			// But let's take the performance way here:
 			_piece setVehicleAmmo 1;
 		};
-	};
+	};  // While loop ends.
 
 	// Side command message:
-	if ( _shouldReport && alive _piece && alive (gunner _piece) ) then {   // WIP: I should improve this!
-		// breath before to talk:
-		sleep 5;
-		// Message:
-		_piece commandChat "Fire-mission completed, sir.";
+	if _shouldReport then {
+		// If the fire-mission leader:
+		if ( _piece isEqualTo _pieceLeader ) then {
+			// breath before to talk:
+			sleep 5;
+			// If piece and its crew is fine:
+			if ( alive _pieceLeader && alive (gunner _pieceLeader) ) then {
+				// Side command message:
+				_pieceLeader commandChat "Fire-mission completed, sir.";
+			// Fire-mission leader is neutralized:
+			} else {
+				// Side command message:
+				[_side, "BASE"] commandChat format ["We lost signal with the fire-mission leader '%1', sir, over!", _piece];
+				sleep 2;
+			};
+		// If not the fire-mission leader:
+		} else {
+			// If a fire-mission member (not leader) is neutralized:
+			if ( !alive _piece || !alive (gunner _piece) ) then {
+				// Side command message:
+				_pieceLeader commandChat "A member of my fire-mission team was lost, sir, over!";
+				sleep 2;
+			};
+
+		};
 	};
 	// Return:
 	true;
@@ -1312,7 +1424,7 @@ THY_fnc_DAP_trigger = {
 	_cycles       = _fireSetup # 4;
 
 	// Debug texts:
-	_txt1 = "FIRE MISSION was released";
+	_txt1 = "FIRE-MISSION was released";
 
 	// Debug monitor > Adding one fire-mission to the queue:
 	if DAP_debug_isOn then { DAP_fmQueueAmount = DAP_fmQueueAmount + 1; publicVariable "DAP_fmQueueAmount" };
@@ -1386,6 +1498,7 @@ THY_fnc_DAP_trigger = {
 		case "MEDIUM":     { _shouldReport = DAP_fmCaliber_shouldReportMedium };
 		case "HEAVY":      { _shouldReport = DAP_fmCaliber_shouldReportHeavy };
 		case "SUPERHEAVY": { _shouldReport = DAP_fmCaliber_shouldReportSuperH };
+		case "COMBINED":   { _shouldReport = DAP_fmCaliber_shouldReportCombined };
 	};
 	
 	// FIRE-MISSION:
@@ -1413,19 +1526,19 @@ THY_fnc_DAP_trigger = {
 					// Ammunition to be used:
 					_ammo = _x # 2;
 					// Fire:
-					[_side, _callsign, _cycles, _piece, _fmMkrPos, _magType, _ammo, _rounds, _teamCooldown, _shouldReport] spawn THY_fnc_DAP_firing;
+					[(_team # 0) # 1, _side, _cycles, _piece, _fmMkrPos, _magType, _ammo, _rounds, _teamCooldown, _shouldReport] spawn THY_fnc_DAP_firing;
 				
 				} else {
 					// Otherwise, no AI as gunner position:
 					if ( _shouldReport && !isPlayer _gunner ) then {
 						// Side command message:
-						[_side, "HQ"] commandChat format ["'%1' is not responding, sir, over!", _piece];
+						[_side, "BASE"] commandChat format ["'%1' is not responding, sir, over!", _piece];
 						sleep 3;
 					// Somehow, the gunner is a player:
 					} else {
 						// Side command message:
 						if _shouldReport then {
-							[_side, "HQ"] commandChat format ["Hehe, '%1' has a human player as gunner (%2), sir! Better to order them directly, over!", _piece, _gunner];
+							[_side, "BASE"] commandChat format ["Hehe, '%1' has a human player as gunner (%2), sir! Better to order them directly, over!", _piece, _gunner];
 							sleep 3;
 						};
 					};
@@ -1434,7 +1547,7 @@ THY_fnc_DAP_trigger = {
 			} else {
 				// Side command message:
 				if _shouldReport then {
-					[_side, "HQ"] commandChat format ["'%1' is NOT responding, sir, over!", _piece];
+					[_side, "BASE"] commandChat format ["'%1' is NOT responding, sir, over!", _piece];
 					sleep 3;
 				};
 			};
@@ -1493,7 +1606,7 @@ THY_fnc_DAP_add_firemission = {
 	// Debug:
 	if ( DAP_debug_isOn && DAP_debug_isOnSectors ) then {
 		// Message:
-		systemChat format ["%1 %2 FIRE MISSION SCHEDULE > Sectorized targets: %3 | Markers:\n%4.",
+		systemChat format ["%1 %2 FIRE-MISSION SCHEDULE > Sectorized targets: %3 | Markers:\n%4.",
 		DAP_txtDebugHeader, 
 		_tag, 
 		_mkrsSectorLetter, 
@@ -1548,15 +1661,15 @@ THY_fnc_DAP_debug = {
 		"\n--- DAP DEBUG MONITOR ---" +
 		"\n Scheduled fire-missions: %1" +
 		//"\n ---" +
-		// "\n BLU Fire missions: 0/10 (WIP)" +
+		// "\n BLU Fire-missions: 0/10 (WIP)" +
 		// "\n BLU Real Pieces: 10/10 (WIP)" +
 		// "\n BLU Virtual ones: 10 (WIP)" +
 		// "\n ---" +
-		// "\n OPF Fire missions: 0/10 (WIP)" +
+		// "\n OPF Fire-missions: 0/10 (WIP)" +
 		// "\n OPF Real Pieces: 10/10 (WIP)" +
 		// "\n OPF Virtual ones: 10 (WIP)" +
 		// "\n ---" +
-		// "\n IND Fire missions: 0/10 (WIP)" +
+		// "\n IND Fire-missions: 0/10 (WIP)" +
 		// "\n IND Real Pieces: 10/10 (WIP)" +
 		// "\n IND Virtual ones: 10 (WIP)" +
 		"\n%2" +

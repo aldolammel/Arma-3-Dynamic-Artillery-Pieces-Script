@@ -11,7 +11,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
     private _time = time + DAP_wait;
     waitUntil { sleep 0.2; time > _time };
     // DAP CORE > DONT TOUCH > Object declarations:
-    private ["_caliber_ANY","_caliber_LIGHT","_caliber_MEDIUM","_caliber_HEAVY","_caliber_SUPERHEAVY","_ammo_HE","_ammo_CLUSTER","_ammo_CLUSTER_MINE_AP","_ammo_CLUSTER_MINE_AT","_ammo_GUIDED","_ammo_GUIDED_LASER","_ammo_SMOKE","_ammo_FLARE"]; _caliber_ANY="ANY";_caliber_LIGHT="LIGHT";_caliber_MEDIUM="MEDIUM";_caliber_HEAVY="HEAVY";_caliber_SUPERHEAVY="SUPERHEAVY";_ammo_HE="HE";_ammo_CLUSTER="CLUSTER";_ammo_CLUSTER_MINE_AP="CLUSTER_MINE_AP";_ammo_CLUSTER_MINE_AT="CLUSTER_MINE_AT";_ammo_GUIDED="GUIDED";_ammo_GUIDED_LASER="GUIDED_LASER";_ammo_SMOKE="SMOKE";_ammo_FLARE="FLARE";
+    private ["_caliber_COMBINED","_caliber_LIGHT","_caliber_MEDIUM","_caliber_HEAVY","_caliber_SUPERHEAVY","_ammo_HE","_ammo_CLUSTER","_ammo_CLUSTER_MINE_AP","_ammo_CLUSTER_MINE_AT","_ammo_GUIDED","_ammo_GUIDED_LASER","_ammo_SMOKE","_ammo_FLARE"]; _caliber_COMBINED="COMBINED";_caliber_LIGHT="LIGHT";_caliber_MEDIUM="MEDIUM";_caliber_HEAVY="HEAVY";_caliber_SUPERHEAVY="SUPERHEAVY";_ammo_HE="HE";_ammo_CLUSTER="CLUSTER";_ammo_CLUSTER_MINE_AP="CLUSTER_MINE_AP";_ammo_CLUSTER_MINE_AT="CLUSTER_MINE_AT";_ammo_GUIDED="GUIDED";_ammo_GUIDED_LASER="GUIDED_LASER";_ammo_SMOKE="SMOKE";_ammo_FLARE="FLARE";
 
 
 
@@ -22,7 +22,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
         // _caliber_MEDIUM .......... Only caliber between 123mm and 159mm, regardless if it belongs to Howitzer, MRL or mortar.
         // _caliber_HEAVY ........... Only caliber between 160mm and 299mm, regardless if it belongs to Howitzer, MRL or mortar.
         // _caliber_SUPERHEAVY ...... Only caliber equal or greater than 300mm, regardless if it belongs to Howitzer, MRL or mortar.
-        // _caliber_ANY ............. Any caliber is applied.
+        // _caliber_COMBINED ........ Random calibers are combined is different pieces are available.
 
     // AMMO MAGAZINES OPTIONS:
         // _ammo_HE ................. High Explosive ammo, great choice against infantry, buildings and light-medium armor vehicles.
@@ -50,7 +50,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
             [BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_ANY, _ammo_HE, 5, 2], [trg_fm_4]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_4]] call THY_fnc_DAP_add_firemission;
             
 
     }; // blufor ends.
@@ -65,8 +65,9 @@ if ( !DAP_isOn || !isServer ) exitWith {};
             // Which column means:
             // [ From OPF [ Target markers, "Sector" ], [ Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
 
-            [OPFOR, [DAP_targetMrksOPF, "A"], [2, _caliber_MEDIUM, _ammo_HE, 5, 1], [trg_fm_5, 0.5]] call THY_fnc_DAP_add_firemission;
+            [OPFOR, [DAP_targetMrksOPF, "K"], [10, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_5, 2]] call THY_fnc_DAP_add_firemission;
             
+            [OPFOR, [DAP_targetMrksOPF, "K"], [5, _caliber_SUPERHEAVY, _ammo_HE, 12, 2], [trg_fm_6]] call THY_fnc_DAP_add_firemission;
 
     }; // opfor ends.
 

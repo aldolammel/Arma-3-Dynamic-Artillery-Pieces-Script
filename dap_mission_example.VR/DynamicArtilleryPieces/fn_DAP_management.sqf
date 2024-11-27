@@ -15,9 +15,9 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	DAP_debug_isOnSectors = false;     // true = additional debugging info for sectorization of artillery target analysis / Default: false;
 
 // Sides to use:
-	DAP_BLU_isOn = true;                    // true = Blufor artillery (real or virtual) will be available in your mission / false = turn them off.
+	DAP_BLU_isOn = false;                    // true = Blufor artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_BLU_name = "BLU Fire Support";      // Name used by DAP when referring to the Blufor artillery teams in side Command chat. Default: "";
-	DAP_OPF_isOn = false;                   // true = Opfor artillery (real or virtual) will be available in your mission / false = turn them off.
+	DAP_OPF_isOn = true;                   // true = Opfor artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_OPF_name = "OPF Fire Support";      // Name used by DAP when referring to the Opfor artillery teams in side Command chat. Default: "";
 	DAP_IND_isOn = false;                   // true = Independent artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_IND_name = "IND Fire Support";      // Name used by DAP when referring to the Independent artillery teams in side Command chat. Default: "";
@@ -28,13 +28,14 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	DAP_fmVisible_color   = "ColorRed";     // (WIP) 
 	DAP_fmVisible_brush   = "FDiagonal";    // (WIP) 
 	DAP_fmVisible_alpha   = 1;              // (WIP) 0.5 = Minefields barely invisible on the map / 1 = quite visible. Default: 1;
-	DAP_fmCycle_coolDown  = 40;             // In seconds, a base for another calc use to create a assymetric delay for the each cycle of a fire-mission / Default: 120;
-	DAP_fmCaliber_shouldReportLight  = false;  // true = Light artillery/mortar reports each action via side command channel / false = No reports / Default: false;
-	DAP_fmCaliber_shouldReportMedium = true;   // true = Medium artillery/mortar reports each action via side command channel / false = No reports / Default: true;
-	DAP_fmCaliber_shouldReportHeavy  = true;   // true = Heavy artillery/mortar reports each action via side command channel / false = No reports / Default: true;
-	DAP_fmCaliber_shouldReportSuperH = true;   // true = Super Heavy artillery/mortar reports each action via side command channel / false = No reports / Default: true;
-	DAP_artill_isInfiniteAmmo        = true;   // true = after each fire-mission cycle, the piece is magically reloaded / false = no magic / Default: true;
-	DAP_artill_isForcedThermalSignat = false;  // (WIP) true = force all DAP pieces emit heat/thermal signature, even if engines off / false = Arma decides / Default: false;
+	DAP_fmCycle_coolDown  = 80;             // In seconds, a base for another calc use to create a assymetric delay for the each cycle of a fire-mission / Default: 80;
+	DAP_fmCaliber_shouldReportLight    = false;  // true = Light artillery/mortar reports each action via side command channel / false = No reports / Default: false;
+	DAP_fmCaliber_shouldReportMedium   = true;   // true = Medium artillery/mortar reports each action via side command channel / false = No reports / Default: true;
+	DAP_fmCaliber_shouldReportHeavy    = true;   // true = Heavy artillery/mortar reports each action via side command channel / false = No reports / Default: true;
+	DAP_fmCaliber_shouldReportSuperH   = true;   // true = Super Heavy artillery/mortar reports each action via side command channel / false = No reports / Default: true;
+	DAP_fmCaliber_shouldReportCombined = true;   // true = Combined mode (all calibers) reports each action via side command channel / false = No reports / Default: true;
+	DAP_artill_isInfiniteAmmo          = true;   // true = after each fire-mission cycle, the piece is magically reloaded / false = no magic / Default: true;
+	DAP_artill_isForcedThermalSignat   = false;  // (WIP) true = force DAP pieces emit heat signature, even if engines off / false = Arma decides / Default: false;
 
 // Server:
 	DAP_fmVirtualETA      = random [20, 30, 40];  // In seconds, it simulates the Estimated Time to Arrival of rounds from virtual fire-missions. Default: random [20, 30, 40];
@@ -63,7 +64,7 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 		// Multiple Rocket Launcher Heavy (crucial: >= 160mm, < 300mm)
 		["HEAVY",      ["rhsusf_M142_usmc_WD","rhsusf_M142_usarmy_WD","rhsusf_M142_usarmy_D","CUP_B_M270_DPICM_BAF_WOOD","CUP_B_M270_DPICM_BAF_DES","CUP_B_M270_HE_BAF_DES","CUP_B_M270_HE_BAF_WOOD","CUP_B_M270_DPICM_HIL","CUP_B_M270_HE_HIL","CUP_B_M270_DPICM_USA","CUP_B_M270_HE_USA","CUP_B_M270_DPICM_USMC","CUP_B_M270_HE_USMC","CUP_I_M270_DPICM_AAF","CUP_I_M270_HE_AAF","CUP_I_M270_DPICM_RACS","CUP_I_M270_HE_RACS"]],
 		// Multiple Rocket Launcher Super Heavy (crucial: >= 300mm)
-		["SUPERHEAVY", ["I_Truck_02_MRL_F","I_E_Truck_02_MRL_F","B_MBT_01_mlrs_F","B_T_MBT_01_mlrs_F","EF_B_MBT_01_mlrs_MJTF_Wdl","EF_B_MBT_01_mlrs_MJTF_Des","rhs_9k79","rhs_9k79_K","rhs_9k79_B"]]
+		["SUPERHEAVY", ["I_Truck_02_MRL_F","I_E_Truck_02_MRL_F","B_MBT_01_mlrs_F","B_T_MBT_01_mlrs_F","EF_B_MBT_01_mlrs_MJTF_Wdl","EF_B_MBT_01_mlrs_MJTF_Des"]]
 	];
 	DAP_knownPieces_mortar = [
 		// Mortar Light (crucial: < 123mm)
@@ -76,7 +77,7 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 		["SUPERHEAVY", []]
 	];
 	// These vehicles and equipments have features that meant to be part of DAP but for any reason are bugged or conflicting DAP dynamics:
-	DAP_pieces_forbidden = ["CUP_B_FV432_Mortar","gm_ge_army_kat1_463_mlrs","gm_pl_army_ural375d_mlrs","gm_gc_army_ural375d_mlrs","gm_pl_army_2p16","gm_gc_army_2p16","rhsgref_cdf_b_reg_d30_at","rhsgref_ins_d30_at","rhs_D30_at_msv","rhs_D30_at_vdv","rhs_D30_at_vmf","rhsgref_cdf_reg_d30_at","rhsgref_ins_g_d30_at","rhsgref_nat_d30_at","rhs_2s3_at_tv"];
+	DAP_pieces_forbidden = ["CUP_B_FV432_Mortar","gm_ge_army_kat1_463_mlrs","gm_pl_army_ural375d_mlrs","gm_gc_army_ural375d_mlrs","gm_pl_army_2p16","gm_gc_army_2p16","rhsgref_cdf_b_reg_d30_at","rhsgref_ins_d30_at","rhs_D30_at_msv","rhs_D30_at_vdv","rhs_D30_at_vmf","rhsgref_cdf_reg_d30_at","rhsgref_ins_g_d30_at","rhsgref_nat_d30_at","rhs_2s3_at_tv","rhs_9k79","rhs_9k79_K","rhs_9k79_B"];
 
 // Library of Known Magazines (ammo):
 	// Below, almost or all magazines used by artillery and mortar in: Arma 3, DLC Apex, DLC Contact, DLC Tanks, CDLC Western Sahara, CDLC Reaction Forces, CDLC Global Mobilization, CDLC Expeditionary Forces, Mod RHS, and Mod CUP. Fell free to add more, respecting their types and what will use them. Check DAP documentation link on this file header.
@@ -248,7 +249,7 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	if !DAP_OPF_isOn then { { deleteMarker _x } forEach DAP_targetMrksOPF };
 	if !DAP_IND_isOn then { { deleteMarker _x } forEach DAP_targetMrksIND };
 	// Global object declarations:
-	publicVariable "DAP_isOn"; publicVariable "DAP_debug_isOn"; publicVariable "DAP_debug_isOnAmmo"; publicVariable "DAP_debug_isOnSectors"; publicVariable "DAP_BLU_isOn"; publicVariable "DAP_BLU_name"; publicVariable "DAP_OPF_isOn"; publicVariable "DAP_OPF_name"; publicVariable "DAP_IND_isOn"; publicVariable "DAP_IND_name"; publicVariable "DAP_fmVisible_isOnMap"; publicVariable "DAP_fmVisible_type"; publicVariable "DAP_fmVisible_color"; publicVariable "DAP_fmVisible_brush"; publicVariable "DAP_fmVisible_alpha"; publicVariable "DAP_fmCycle_coolDown"; publicVariable "DAP_fmCaliber_shouldReportLight"; publicVariable "DAP_fmCaliber_shouldReportMedium"; publicVariable "DAP_fmCaliber_shouldReportHeavy"; publicVariable "DAP_fmCaliber_shouldReportSuperH"; publicVariable "DAP_artill_isInfiniteAmmo"; publicVariable "DAP_artill_isForcedThermalSignat"; publicVariable "DAP_fmVirtualETA"; publicVariable "DAP_preventDynamicSim"; publicVariable "DAP_proventMoving"; publicVariable "DAP_fireMissionBreath"; publicVariable "DAP_wait"; publicVariable "DAP_knownPieces_howitzer"; publicVariable "DAP_knownPieces_mrl"; publicVariable "DAP_knownPieces_mortar"; publicVariable "DAP_pieces_forbidden"; publicVariable "DAP_knownMagazines_howitzer"; publicVariable "DAP_knownMagazines_mrl"; publicVariable "DAP_knownMagazines_mortar"; publicVariable "DAP_maganizes_forbidden"; publicVariable "DAP_fmQueueAmount"; publicVariable "DAP_txtDebugHeader"; publicVariable "DAP_txtWarnHeader"; publicVariable "DAP_prefix"; publicVariable "DAP_spacer"; publicVariable "DAP_piecesCaliber_light"; publicVariable "DAP_piecesCaliber_medium"; publicVariable "DAP_piecesCaliber_heavy"; publicVariable "DAP_piecesCaliber_superHeavy"; publicVariable "DAP_mags_he"; publicVariable "DAP_mags_guided"; publicVariable "DAP_mags_guided_laser"; publicVariable "DAP_mags_cluster"; publicVariable "DAP_mags_cluster_mine_ap"; publicVariable "DAP_mags_cluster_mine_at"; publicVariable "DAP_mags_smoke"; publicVariable "DAP_mags_flare"; publicVariable "DAP_piecesBLU"; publicVariable "DAP_piecesOPF"; publicVariable "DAP_piecesIND"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND";
+	publicVariable "DAP_isOn"; publicVariable "DAP_debug_isOn"; publicVariable "DAP_debug_isOnAmmo"; publicVariable "DAP_debug_isOnSectors"; publicVariable "DAP_BLU_isOn"; publicVariable "DAP_BLU_name"; publicVariable "DAP_OPF_isOn"; publicVariable "DAP_OPF_name"; publicVariable "DAP_IND_isOn"; publicVariable "DAP_IND_name"; publicVariable "DAP_fmVisible_isOnMap"; publicVariable "DAP_fmVisible_type"; publicVariable "DAP_fmVisible_color"; publicVariable "DAP_fmVisible_brush"; publicVariable "DAP_fmVisible_alpha"; publicVariable "DAP_fmCycle_coolDown"; publicVariable "DAP_fmCaliber_shouldReportLight"; publicVariable "DAP_fmCaliber_shouldReportMedium"; publicVariable "DAP_fmCaliber_shouldReportHeavy"; publicVariable "DAP_fmCaliber_shouldReportSuperH"; publicVariable "DAP_fmCaliber_shouldReportCombined"; publicVariable "DAP_artill_isInfiniteAmmo"; publicVariable "DAP_artill_isForcedThermalSignat"; publicVariable "DAP_fmVirtualETA"; publicVariable "DAP_preventDynamicSim"; publicVariable "DAP_proventMoving"; publicVariable "DAP_fireMissionBreath"; publicVariable "DAP_wait"; publicVariable "DAP_knownPieces_howitzer"; publicVariable "DAP_knownPieces_mrl"; publicVariable "DAP_knownPieces_mortar"; publicVariable "DAP_pieces_forbidden"; publicVariable "DAP_knownMagazines_howitzer"; publicVariable "DAP_knownMagazines_mrl"; publicVariable "DAP_knownMagazines_mortar"; publicVariable "DAP_maganizes_forbidden"; publicVariable "DAP_fmQueueAmount"; publicVariable "DAP_txtDebugHeader"; publicVariable "DAP_txtWarnHeader"; publicVariable "DAP_prefix"; publicVariable "DAP_spacer"; publicVariable "DAP_piecesCaliber_light"; publicVariable "DAP_piecesCaliber_medium"; publicVariable "DAP_piecesCaliber_heavy"; publicVariable "DAP_piecesCaliber_superHeavy"; publicVariable "DAP_mags_he"; publicVariable "DAP_mags_guided"; publicVariable "DAP_mags_guided_laser"; publicVariable "DAP_mags_cluster"; publicVariable "DAP_mags_cluster_mine_ap"; publicVariable "DAP_mags_cluster_mine_at"; publicVariable "DAP_mags_smoke"; publicVariable "DAP_mags_flare"; publicVariable "DAP_piecesBLU"; publicVariable "DAP_piecesOPF"; publicVariable "DAP_piecesIND"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND";
 	// Debug:
 	if DAP_debug_isOn then {
 		// If the specific side is ON and has at least 1 spawnpoint:
