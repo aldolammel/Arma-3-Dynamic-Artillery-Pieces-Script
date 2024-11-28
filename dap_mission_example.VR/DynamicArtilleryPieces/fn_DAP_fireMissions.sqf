@@ -44,13 +44,13 @@ if ( !DAP_isOn || !isServer ) exitWith {};
             // Which column means:
             // [ From BLU [ Target markers, "Sector" ], [ Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
+            //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "B"], [5, _caliber_SUPERHEAVY, _ammo_HE, 12, 2], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [4, _caliber_COMBINED, _ammo_HE, 12, 2], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
+            //[BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_4]] call THY_fnc_DAP_add_firemission;
+            //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_4]] call THY_fnc_DAP_add_firemission;
             
 
     }; // blufor ends.

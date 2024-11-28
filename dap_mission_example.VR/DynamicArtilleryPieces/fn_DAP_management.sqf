@@ -7,17 +7,18 @@
 if !isServer exitWith {};
 
 // PARAMETERS OF EDITOR'S OPTIONS:
-DAP_isOn = true;                       // Turn on or off the entire script without to touch your description.ext / Default: true;
+DAP_isOn = true;                         // Turn on or off the entire script without to touch your description.ext / Default: true;
 
 // Debug:
-	DAP_debug_isOn        = true;      // true = shows basic debug information for the Mission Editor / false = turn it off. Default: false.
-	DAP_debug_isOnAmmo    = true;      // true = additional info about the 1st artillery piece of a side / Default: true;
-	DAP_debug_isOnSectors = false;     // true = additional debugging info for sectorization of artillery target analysis / Default: false;
+	DAP_debug_isOn          = true;      // true = shows debugging info for the Mission Editor (turn it off before release your mission) / Default: false.
+	DAP_debug_isOnAmmo      = true;      // true = additional debugging info about the 1st artillery piece of a side / Default: true;
+	DAP_debug_isOnTeamCheck = true;      // true = additional debugging info about the fire-mission team assembly / Default: true;
+	DAP_debug_isOnSectors   = false;     // true = additional debugging info for sectorization of artillery target analysis / Default: false;
 
 // Sides to use:
-	DAP_BLU_isOn = false;                    // true = Blufor artillery (real or virtual) will be available in your mission / false = turn them off.
+	DAP_BLU_isOn = true;                    // true = Blufor artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_BLU_name = "BLU Fire Support";      // Name used by DAP when referring to the Blufor artillery teams in side Command chat. Default: "";
-	DAP_OPF_isOn = true;                   // true = Opfor artillery (real or virtual) will be available in your mission / false = turn them off.
+	DAP_OPF_isOn = false;                   // true = Opfor artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_OPF_name = "OPF Fire Support";      // Name used by DAP when referring to the Opfor artillery teams in side Command chat. Default: "";
 	DAP_IND_isOn = false;                   // true = Independent artillery (real or virtual) will be available in your mission / false = turn them off.
 	DAP_IND_name = "IND Fire Support";      // Name used by DAP when referring to the Independent artillery teams in side Command chat. Default: "";
@@ -28,7 +29,7 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	DAP_fmVisible_color   = "ColorRed";     // (WIP) 
 	DAP_fmVisible_brush   = "FDiagonal";    // (WIP) 
 	DAP_fmVisible_alpha   = 1;              // (WIP) 0.5 = Minefields barely invisible on the map / 1 = quite visible. Default: 1;
-	DAP_fmCycle_coolDown  = 80;             // In seconds, a base for another calc use to create a assymetric delay for the each cycle of a fire-mission / Default: 80;
+	DAP_fmCycle_coolDown  = 40;             // In seconds, a base for another calc use to create a assymetric delay for the each cycle of a fire-mission / Default: 40;
 	DAP_fmCaliber_shouldReportLight    = false;  // true = Light artillery/mortar reports each action via side command channel / false = No reports / Default: false;
 	DAP_fmCaliber_shouldReportMedium   = true;   // true = Medium artillery/mortar reports each action via side command channel / false = No reports / Default: true;
 	DAP_fmCaliber_shouldReportHeavy    = true;   // true = Heavy artillery/mortar reports each action via side command channel / false = No reports / Default: true;
@@ -36,13 +37,19 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	DAP_fmCaliber_shouldReportCombined = true;   // true = Combined mode (all calibers) reports each action via side command channel / false = No reports / Default: true;
 	DAP_artill_isInfiniteAmmo          = true;   // true = after each fire-mission cycle, the piece is magically reloaded / false = no magic / Default: true;
 	DAP_artill_isForcedThermalSignat   = false;  // (WIP) true = force DAP pieces emit heat signature, even if engines off / false = Arma decides / Default: false;
-
+	DAP_fmCaliber_timeRearmLight       = 30;   // in seconds, reload time for MRL light caliber. Minimal 15 / Default 30;
+	DAP_fmCaliber_timeRearmMedium      = 60;   // in seconds, reload time for MRL medium caliber. Minimal 30 / Default 60;
+	DAP_fmCaliber_timeRearmHeavy       = 120;  // in seconds, reload time for MRL heavy caliber. Minimal 60 / Default 120;
+	DAP_fmCaliber_timeRearmSuperH      = 50;  // in seconds, reload time for MRL super heavy caliber. Minimal 120 / Default 240;
+	
 // Server:
-	DAP_fmVirtualETA      = random [20, 30, 40];  // In seconds, it simulates the Estimated Time to Arrival of rounds from virtual fire-missions. Default: random [20, 30, 40];
-	DAP_preventDynamicSim = true;   // true = DAP will prevent pieces to freeze at big distances / false = doesn't prevent (NOT RECOMMENDED) / Default: true;
-	DAP_proventMoving     = false;  // true = DAP will prevent piece self-propelled to change its position for any reason / false = Arma decides / Default: false;
-	DAP_fireMissionBreath = 10;     // In seconds, Time you give to the server reads each fire-mission. Never lower than 2. Default: 10;
-	DAP_wait              = 1;      // In seconds, If you need to make DAP waits more for other scripts load first, set a delay in seconds. Default: 5;
+	DAP_fmVirtualETA        = selectRandom [25, 35, 45];  // In secs, simulates the Estimated Time to Arrival from (if) virtual rounds. Default: selectRandom [25, 35, 45];
+	DAP_preventDynamicSim   = true;   // true = DAP will prevent pieces to freeze at big distances / false = doesn't prevent (NOT RECOMMENDED) / Default: true;
+	DAP_preventStartLowAmmo = false;   // true = DAP will prevent pieces to start dry or with low levels of ammunition / false = Editor decides / Default: true;
+	DAP_preventUnlocked     = false;   // true = DAP will lock for players all artillery-pieces where it's possible / false = Editor decides / Default: true;
+	DAP_proventMoving       = false;  // true = DAP will prevent piece self-propelled to change its position for any reason / false = Arma decides / Default: false;
+	DAP_fireMissionBreath   = 10;     // In seconds, time you give to the server reads each fire-mission. Never lower than 2. Default: 10;
+	DAP_wait                = 1;      // In seconds, If you need to make DAP waits more for other scripts load first, set a delay in seconds. Default: 5;
 
 // Library of Known Artillery Pieces:
 	// Below, all howitzers, multiple rocket launchers and mortars from: Arma 3, DLC Apex, DLC Contact, DLC Tanks, CDLC Western Sahara, CDLC Reaction Forces, CDLC Global Mobilization, CDLC Expeditionary Forces, Mod RHS, and Mod CUP. Fell free to add more, respecting their classes and subclasses. Check DAP documentation link on this file header.
@@ -114,7 +121,15 @@ DAP_isOn = true;                       // Turn on or off the entire script witho
 	// These magazines are bugged or conflicting with DAP dynamics:
 	DAP_maganizes_forbidden = ["rhs_mag_bk13_5","rhs_mag_155mm_raams_1","rhs_mag_155mm_m731_1","rhs_mag_9m28k_1","rhs_mag_m26_6","gm_3Rnd_122x447mm_heat_t_bk13","gm_40Rnd_mlrs_122mm_he_9m22u","gm_36Rnd_mlrs_110mm_he_dm21","gm_1Rnd_luna_he_3r9"];
 
-
+// Codenames for fire-missions (fill free to custom):
+	DAP_firemissions_codenames = [
+		// Blufor codenames
+		["NEWYORK","LONDON","TOKYO","PARIS","CAEN","VALENCIA","HONGKONG","SINGAPORE","LOSANGELES","BEIJING","SHANGHAI","DUBAI","MUMBAI","SEOUL","SYDNEY","SANFRANCISCO","MOSCOW","BERLIN","MADRID","TORONTO","CHICAGO","ISTANBUL","BANGKOK","KUALA LUMPUR","BUENOSAIRES","SAOPAULO","MEXICOCITY","JOHANNESBURG","ROME","MELBOURNE","JAKARTA","CAIRO","DELHI","SHENZHEN","GUANGZHOU","VIENNA","ZURICH","MUNICH","AMSTERDAM","GENEVA","HOUSTON","ABUDHABI","WASHINGTON","BOSTON","MIAMI","BARCELONA","STOCKHOLM","COPENHAGEN","DUBLIN","OSLO","BRUSSELS","FRANKFURT","PRAGUE","BRNO","WARSAW","BUDAPEST","HELSINKI","LISBON","ATHENS","TELAVIV","DOHA","RIYADH","MANILA","CHENNAI","BANGALORE","CAPETOWN","DURBAN","LAGOS","CASABLANCA","ADDISABABA","NAIROBI","HOCHIMINHCITY","HANOI","TAIPEI","KOLKATA","KARACHI","TEHRAN","BAGHDAD","DAMASCUS","RABAT","ALGIERS","ANKARA","BUCHAREST","SOFIA","BELGRADE","LIMA","SANTIAGO","BOGOTA","RIO","MONTEVIDEO","ASUNCION","QUITO","CARACAS","HAVANA","PANAMACITY","SANJOSE","KINGSTON","LAPAZ","SANTACRUZ","SANSALVADOR","GUATEMALACITY","TEGUCIGALPA","PORTOALEGRE","CHARQUEADAS","TBILISI","MILAN","SANREMO","BASTOGNE","MEDELLIN"],
+		// Opfor codenames
+		["NEWYORK","LONDON","TOKYO","PARIS","CAEN","VALENCIA","HONGKONG","SINGAPORE","LOSANGELES","BEIJING","SHANGHAI","DUBAI","MUMBAI","SEOUL","SYDNEY","SANFRANCISCO","MOSCOW","BERLIN","MADRID","TORONTO","CHICAGO","ISTANBUL","BANGKOK","KUALA LUMPUR","BUENOSAIRES","SAOPAULO","MEXICOCITY","JOHANNESBURG","ROME","MELBOURNE","JAKARTA","CAIRO","DELHI","SHENZHEN","GUANGZHOU","VIENNA","ZURICH","MUNICH","AMSTERDAM","GENEVA","HOUSTON","ABUDHABI","WASHINGTON","BOSTON","MIAMI","BARCELONA","STOCKHOLM","COPENHAGEN","DUBLIN","OSLO","BRUSSELS","FRANKFURT","PRAGUE","BRNO","WARSAW","BUDAPEST","HELSINKI","LISBON","ATHENS","TELAVIV","DOHA","RIYADH","MANILA","CHENNAI","BANGALORE","CAPETOWN","DURBAN","LAGOS","CASABLANCA","ADDISABABA","NAIROBI","HOCHIMINHCITY","HANOI","TAIPEI","KOLKATA","KARACHI","TEHRAN","BAGHDAD","DAMASCUS","RABAT","ALGIERS","ANKARA","BUCHAREST","SOFIA","BELGRADE","LIMA","SANTIAGO","BOGOTA","RIO","MONTEVIDEO","ASUNCION","QUITO","CARACAS","HAVANA","PANAMACITY","SANJOSE","KINGSTON","LAPAZ","SANTACRUZ","SANSALVADOR","GUATEMALACITY","TEGUCIGALPA","PORTOALEGRE","CHARQUEADAS","TBILISI","MILAN","SANREMO","BASTOGNE","MEDELLIN"],
+		// Independent codenames
+		["NEWYORK","LONDON","TOKYO","PARIS","CAEN","VALENCIA","HONGKONG","SINGAPORE","LOSANGELES","BEIJING","SHANGHAI","DUBAI","MUMBAI","SEOUL","SYDNEY","SANFRANCISCO","MOSCOW","BERLIN","MADRID","TORONTO","CHICAGO","ISTANBUL","BANGKOK","KUALA LUMPUR","BUENOSAIRES","SAOPAULO","MEXICOCITY","JOHANNESBURG","ROME","MELBOURNE","JAKARTA","CAIRO","DELHI","SHENZHEN","GUANGZHOU","VIENNA","ZURICH","MUNICH","AMSTERDAM","GENEVA","HOUSTON","ABUDHABI","WASHINGTON","BOSTON","MIAMI","BARCELONA","STOCKHOLM","COPENHAGEN","DUBLIN","OSLO","BRUSSELS","FRANKFURT","PRAGUE","BRNO","WARSAW","BUDAPEST","HELSINKI","LISBON","ATHENS","TELAVIV","DOHA","RIYADH","MANILA","CHENNAI","BANGALORE","CAPETOWN","DURBAN","LAGOS","CASABLANCA","ADDISABABA","NAIROBI","HOCHIMINHCITY","HANOI","TAIPEI","KOLKATA","KARACHI","TEHRAN","BAGHDAD","DAMASCUS","RABAT","ALGIERS","ANKARA","BUCHAREST","SOFIA","BELGRADE","LIMA","SANTIAGO","BOGOTA","RIO","MONTEVIDEO","ASUNCION","QUITO","CARACAS","HAVANA","PANAMACITY","SANJOSE","KINGSTON","LAPAZ","SANTACRUZ","SANSALVADOR","GUATEMALACITY","TEGUCIGALPA","PORTOALEGRE","CHARQUEADAS","TBILISI","MILAN","SANREMO","BASTOGNE","MEDELLIN"]
+	];
 
 
 
@@ -130,8 +145,13 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	// Local object declarations:
 	private ["_knownPiecesAll","_knownMagsAll","_confirmedPieces","_confirmedMkrs"];
 	// Initial values:
-	DAP_fmQueueAmount = 0;  // debug proposes.
-	DAP_targetMrksBLU=[]; DAP_targetMrksOPF=[]; DAP_targetMrksIND=[];
+	DAP_fmScheduled = [
+		[],  // blu
+		[],  // opf
+		[]   // ind
+	];
+	DAP_targetMrksBLU = []; DAP_targetMrksOPF = []; DAP_targetMrksIND = [];
+	DAP_piecesNeedRearm=[[/* blu */],[/* opf */],[/* ind */]];
 	// Declarations:
 	DAP_txtDebugHeader = toUpper "DAP DEBUG >";
 	DAP_txtWarnHeader  = toUpper "DAP WARNING >";
@@ -231,10 +251,12 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	if (DAP_fireMissionBreath < 2) then {DAP_fireMissionBreath=2; if DAP_debug_isOn then {systemChat format ["%1 'DAP_fireMissionBreath' CANNOT be set lower than %2s. DAP automatically changed it to the lowest value possible: (%2).", DAP_txtDebugHeader, DAP_fireMissionBreath]}}; if (DAP_fmVisible_type isEqualTo "") then {DAP_fmVisible_type="mil_destroy"; systemChat format ["%1 'DAP_fmVisible_type' CANNOT be empty. DAP automatically changed it to the default value (''%2'').", DAP_txtWarnHeader, DAP_fmVisible_type]}; DAP_fmVirtualETA = abs (round DAP_fmVirtualETA); if (DAP_fmCycle_coolDown < 30) then {DAP_fmCycle_coolDown=30; systemChat format ["%1 'DAP_fmCycle_coolDown' CANNOT be lower than %2 secs. DAP automatically changed it to the lowest value (%2).", DAP_txtWarnHeader, DAP_fmCycle_coolDown]};
 	// Escape > If an error that compromises the DAP consistency take place:
 	if ([_knownPiecesAll, _knownMagsAll, DAP_pieces_forbidden, DAP_maganizes_forbidden, DAP_txtWarnHeader] call THY_fnc_DAP_initial_validation) exitWith { DAP_isOn = false; publicVariable "DAP_isOn"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND"; systemChat format ["%1 The script stopped automatically!", DAP_txtWarnHeader]};
-	// Debug:
+	// Using debug mode:
 	if DAP_debug_isOn then {
-		if ( DAP_wait > 10 ) then { systemChat format ["%1 Don't forget the DAP is configurated to delay %2 seconds before to starts its tasks.", DAP_txtDebugHeader, DAP_wait] };
-		if ( DAP_fireMissionBreath >= 60 ) then { systemChat format ["%1 Don't forget the DAP is set to delay %2 secs between each fire-mission task. Default is 10.", DAP_txtDebugHeader, DAP_fireMissionBreath] };
+		if ( DAP_wait > 10 ) then { systemChat format ["%1 Don't forget the DAP is configurated to delay %2 seconds before to starts its tasks.", DAP_txtDebugHeader, DAP_wait] }; if ( DAP_fireMissionBreath >= 60 ) then { systemChat format ["%1 Don't forget the DAP is set to delay %2 secs between each fire-mission task. Default is 10.", DAP_txtDebugHeader, DAP_fireMissionBreath] }; DAP_fmCaliber_timeRearmLight = abs DAP_fmCaliber_timeRearmLight; DAP_fmCaliber_timeRearmMedium = abs DAP_fmCaliber_timeRearmMedium; DAP_fmCaliber_timeRearmHeavy = abs DAP_fmCaliber_timeRearmHeavy; DAP_fmCaliber_timeRearmSuperH = abs DAP_fmCaliber_timeRearmSuperH;
+	} else {
+		// After leave the debug mode:
+		if (DAP_fmCaliber_timeRearmLight < 15) then {DAP_fmCaliber_timeRearmLight=15; systemChat format ["%1 AMMO LOGISTIC > 'DAP_fmCaliber_timeRearmLight' CANNOT be lower than the minimal value (%2) out of the Debug Mode. For now, DAP changed to the minimal until you fix it.", DAP_txtWarnHeader, DAP_fmCaliber_timeRearmLight]}; if (DAP_fmCaliber_timeRearmMedium < 30) then {DAP_fmCaliber_timeRearmMedium=30; systemChat format ["%1 AMMO LOGISTIC > 'DAP_fmCaliber_timeRearmMedium' CANNOT be lower than the minimal value (%2) out of the Debug Mode. For now, DAP changed to the minimal until you fix it.", DAP_txtWarnHeader, DAP_fmCaliber_timeRearmMedium]}; if (DAP_fmCaliber_timeRearmHeavy < 60) then {DAP_fmCaliber_timeRearmHeavy=60; systemChat format ["%1 AMMO LOGISTIC > 'DAP_fmCaliber_timeRearmHeavy' CANNOT be lower than the minimal value (%2) out of the Debug Mode. For now, DAP changed to the minimal until you fix it.", DAP_txtWarnHeader, DAP_fmCaliber_timeRearmHeavy]}; if (DAP_fmCaliber_timeRearmSuperH < 120) then {DAP_fmCaliber_timeRearmSuperH=120; systemChat format ["%1 AMMO LOGISTIC > 'DAP_fmCaliber_timeRearmSuperH' CANNOT be lower than the minimal value (%2) out of the Debug Mode. For now, DAP changed to the minimal until you fix it.", DAP_txtWarnHeader, DAP_fmCaliber_timeRearmSuperH]};
 	};
 	// Debug markers stylish:
 	if DAP_debug_isOn then {
@@ -249,7 +271,7 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	if !DAP_OPF_isOn then { { deleteMarker _x } forEach DAP_targetMrksOPF };
 	if !DAP_IND_isOn then { { deleteMarker _x } forEach DAP_targetMrksIND };
 	// Global object declarations:
-	publicVariable "DAP_isOn"; publicVariable "DAP_debug_isOn"; publicVariable "DAP_debug_isOnAmmo"; publicVariable "DAP_debug_isOnSectors"; publicVariable "DAP_BLU_isOn"; publicVariable "DAP_BLU_name"; publicVariable "DAP_OPF_isOn"; publicVariable "DAP_OPF_name"; publicVariable "DAP_IND_isOn"; publicVariable "DAP_IND_name"; publicVariable "DAP_fmVisible_isOnMap"; publicVariable "DAP_fmVisible_type"; publicVariable "DAP_fmVisible_color"; publicVariable "DAP_fmVisible_brush"; publicVariable "DAP_fmVisible_alpha"; publicVariable "DAP_fmCycle_coolDown"; publicVariable "DAP_fmCaliber_shouldReportLight"; publicVariable "DAP_fmCaliber_shouldReportMedium"; publicVariable "DAP_fmCaliber_shouldReportHeavy"; publicVariable "DAP_fmCaliber_shouldReportSuperH"; publicVariable "DAP_fmCaliber_shouldReportCombined"; publicVariable "DAP_artill_isInfiniteAmmo"; publicVariable "DAP_artill_isForcedThermalSignat"; publicVariable "DAP_fmVirtualETA"; publicVariable "DAP_preventDynamicSim"; publicVariable "DAP_proventMoving"; publicVariable "DAP_fireMissionBreath"; publicVariable "DAP_wait"; publicVariable "DAP_knownPieces_howitzer"; publicVariable "DAP_knownPieces_mrl"; publicVariable "DAP_knownPieces_mortar"; publicVariable "DAP_pieces_forbidden"; publicVariable "DAP_knownMagazines_howitzer"; publicVariable "DAP_knownMagazines_mrl"; publicVariable "DAP_knownMagazines_mortar"; publicVariable "DAP_maganizes_forbidden"; publicVariable "DAP_fmQueueAmount"; publicVariable "DAP_txtDebugHeader"; publicVariable "DAP_txtWarnHeader"; publicVariable "DAP_prefix"; publicVariable "DAP_spacer"; publicVariable "DAP_piecesCaliber_light"; publicVariable "DAP_piecesCaliber_medium"; publicVariable "DAP_piecesCaliber_heavy"; publicVariable "DAP_piecesCaliber_superHeavy"; publicVariable "DAP_mags_he"; publicVariable "DAP_mags_guided"; publicVariable "DAP_mags_guided_laser"; publicVariable "DAP_mags_cluster"; publicVariable "DAP_mags_cluster_mine_ap"; publicVariable "DAP_mags_cluster_mine_at"; publicVariable "DAP_mags_smoke"; publicVariable "DAP_mags_flare"; publicVariable "DAP_piecesBLU"; publicVariable "DAP_piecesOPF"; publicVariable "DAP_piecesIND"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND";
+	publicVariable "DAP_isOn"; publicVariable "DAP_debug_isOn"; publicVariable "DAP_debug_isOnAmmo"; publicVariable "DAP_debug_isOnTeamCheck"; publicVariable "DAP_debug_isOnSectors"; publicVariable "DAP_BLU_isOn"; publicVariable "DAP_BLU_name"; publicVariable "DAP_OPF_isOn"; publicVariable "DAP_OPF_name"; publicVariable "DAP_IND_isOn"; publicVariable "DAP_IND_name"; publicVariable "DAP_fmVisible_isOnMap"; publicVariable "DAP_fmVisible_type"; publicVariable "DAP_fmVisible_color"; publicVariable "DAP_fmVisible_brush"; publicVariable "DAP_fmVisible_alpha"; publicVariable "DAP_fmCycle_coolDown"; publicVariable "DAP_fmCaliber_shouldReportLight"; publicVariable "DAP_fmCaliber_shouldReportMedium"; publicVariable "DAP_fmCaliber_shouldReportHeavy"; publicVariable "DAP_fmCaliber_shouldReportSuperH"; publicVariable "DAP_fmCaliber_shouldReportCombined"; publicVariable "DAP_artill_isInfiniteAmmo"; publicVariable "DAP_artill_isForcedThermalSignat"; publicVariable "DAP_fmCaliber_timeRearmLight"; publicVariable "DAP_fmCaliber_timeRearmMedium"; publicVariable "DAP_fmCaliber_timeRearmHeavy"; publicVariable "DAP_fmCaliber_timeRearmSuperH"; publicVariable "DAP_fmVirtualETA"; publicVariable "DAP_preventDynamicSim"; publicVariable "DAP_preventStartLowAmmo"; publicVariable "DAP_preventUnlocked"; publicVariable "DAP_proventMoving"; publicVariable "DAP_fireMissionBreath"; publicVariable "DAP_wait"; publicVariable "DAP_knownPieces_howitzer"; publicVariable "DAP_knownPieces_mrl"; publicVariable "DAP_knownPieces_mortar"; publicVariable "DAP_pieces_forbidden"; publicVariable "DAP_knownMagazines_howitzer"; publicVariable "DAP_knownMagazines_mrl"; publicVariable "DAP_knownMagazines_mortar"; publicVariable "DAP_maganizes_forbidden"; publicVariable "DAP_firemissions_codenames"; publicVariable "DAP_fmScheduled"; publicVariable "DAP_txtDebugHeader"; publicVariable "DAP_txtWarnHeader"; publicVariable "DAP_prefix"; publicVariable "DAP_spacer"; publicVariable "DAP_piecesCaliber_light"; publicVariable "DAP_piecesCaliber_medium"; publicVariable "DAP_piecesCaliber_heavy"; publicVariable "DAP_piecesCaliber_superHeavy"; publicVariable "DAP_mags_he"; publicVariable "DAP_mags_guided"; publicVariable "DAP_mags_guided_laser"; publicVariable "DAP_mags_cluster"; publicVariable "DAP_mags_cluster_mine_ap"; publicVariable "DAP_mags_cluster_mine_at"; publicVariable "DAP_mags_smoke"; publicVariable "DAP_mags_flare"; publicVariable "DAP_piecesBLU"; publicVariable "DAP_piecesOPF"; publicVariable "DAP_piecesIND"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND"; publicVariable "DAP_piecesNeedRearm";
 	// Debug:
 	if DAP_debug_isOn then {
 		// If the specific side is ON and has at least 1 spawnpoint:
