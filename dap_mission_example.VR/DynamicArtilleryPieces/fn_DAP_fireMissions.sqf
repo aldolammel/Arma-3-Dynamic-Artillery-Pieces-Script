@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.1
+// DAP: Dynamic Artillery Pieces v1.5
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_fireMissions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -46,7 +46,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
             //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 4, _caliber_COMBINED, _ammo_HE, 12, 2], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 2, _caliber_MEDIUM, _ammo_SMOKE, 1, 1], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
 
             //[BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
 

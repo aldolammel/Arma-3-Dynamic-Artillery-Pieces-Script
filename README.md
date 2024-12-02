@@ -1,4 +1,4 @@
-# Arma-3-Dynamic-Artillery-Pieces-Script v1.2
+# Arma-3-Dynamic-Artillery-Pieces-Script v1.5
 >*Dependencies: none.*
 
 DAP is an Arma 3 script that allows the Mission Editor (you) to create real (or virtual) artillery/mortar fire missions faster and smarter for one or multiple sides, using Eden marker’s positions and an external fire missions list where you plan the caliber, ammo type, rounds, cycle of repetition and more.
@@ -68,17 +68,22 @@ __
 
 ## CHANGELOG
 
-**Nov, 28th 2024 | v1.2**
+**Soon 2024 | v1.5**
 
 - Added native support to artillery-pieces from CDLC Expeditionary Forces;
+- Added automatic schedule management that allows multiples fire-missions at the same time;
+- Added rearming management by caliber (with 3D sound effects);
 - Added option to lock all artillery-pieces for players;
-- Added option to prevent pieces starting with low ammo;
-- Added reloading management by caliber;
-- Added ammunition check if not unlimited;
+- Added option to prevent pieces starting with no magazines/low ammo;
+- Added option to prevent pieces self-propelled to move from their original positions;
 - Improved the fire-mission feedback messages;
-- Improved, each fire-mission was given a codename to help identify what the feedback is about;
+- Improved, each fire-mission was given a codename (customizable) to help identify what the feedback is about;
+- Improved, each artillery-piece automatically renamed to the custom side name;
+- Improved, the caliber 'ANY' was renamed to 'COMBINED' for better understanding and use;
+- Improved, performance;
+- Fixed the debug target-markers-counter that was considering DAP markers from disabled sides as well;
+- Fixed the debug artillery-pieces-counter that was considering DAP vehicles from disabled sides as well;
 - Removed rhs_9k79, rhs_9k79_K, and rhs_9k79_B from the DAP Library. They're bugged;
-- The caliber 'ANY' was renamed to 'COMBINED' for better For better understanding and use;
 - Documentation updated;
 
 **Nov, 25th 2024 | v1.0**
