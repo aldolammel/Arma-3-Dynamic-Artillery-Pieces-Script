@@ -38,7 +38,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
     if ( DAP_BLU_isOn && count DAP_targetMrksBLU > 0 ) then {
 
-        // FIRE-MISSIONS PLAN: BLUFOR
+        // FIRE-MISSIONS PLAN: BLUFORw
         // Define each fire-mission should be available for this side. You can add or remove fire-mission rows as you wish.
 
             // Which column means:
@@ -46,7 +46,9 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
             //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 2, _caliber_MEDIUM, _ammo_FLARE, 1, 1], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 8, _caliber_COMBINED, _ammo_SMOKE, 6, 2], [trg_fm_2]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 3, _caliber_COMBINED, _ammo_HE, 6, 2], [trg_fm_7]] call THY_fnc_DAP_add_firemission;
+            //[BLUFOR, [DAP_targetMrksBLU, "A"], [true, 4, _caliber_COMBINED, _ammo_HE, 6, 2], [trg_fm_7]] call THY_fnc_DAP_add_firemission;
 
             //[BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
 
