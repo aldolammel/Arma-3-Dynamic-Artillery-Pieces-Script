@@ -46,7 +46,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
             //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 2, _caliber_MEDIUM, _ammo_SMOKE, 1, 1], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 2, _caliber_MEDIUM, _ammo_FLARE, 1, 1], [trg_fm_2, unit_target_1]] call THY_fnc_DAP_add_firemission;
 
             //[BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
 
