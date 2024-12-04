@@ -68,19 +68,20 @@ __
 
 ## CHANGELOG
 
-**Soon 2024 | v1.5**
+**Dec, 4th 2024 | v1.5**
 
 - Added native support to artillery-pieces from CDLC Expeditionary Forces;
 - Added automatic schedule management that allows multiples fire-missions at the same time;
 - Added rearming management by caliber (with 3D sound effects);
-- Added option to lock all artillery-pieces for players;
-- Added option to prevent pieces starting with no magazines/low ammo;
 - Added option to prevent pieces self-propelled to move from their original positions;
+- Added virtual-fire-mission option (WIP: only HE and CLUSTER options and LIGHT and MEDIUM calibers nowadays);
 - Improved the fire-mission feedback messages;
 - Improved, each fire-mission was given a codename (customizable) to help identify what the feedback is about;
 - Improved, each artillery-piece automatically renamed to the custom side name;
 - Improved, the caliber 'ANY' was renamed to 'COMBINED' for better understanding and use;
 - Improved, performance;
+- Improved the mission-example;
+- Fixed if a fire-mission is aborted, no more artillery-pieces keep shelling the target without lose their capacity to engage local threats (with coaxial if appliable);
 - Fixed the debug target-markers-counter that was considering DAP markers from disabled sides as well;
 - Fixed the debug artillery-pieces-counter that was considering DAP vehicles from disabled sides as well;
 - Removed rhs_9k79, rhs_9k79_K, and rhs_9k79_B from the DAP Library. They're bugged;

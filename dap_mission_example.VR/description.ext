@@ -39,7 +39,7 @@ cba_settings_hasSettingsFile = 0;
 
 class cfgFunctions 
 {
-	// DAP: DYNAMIC ARTILLERY PIECES v1.0
+	// DAP: DYNAMIC ARTILLERY PIECES v1.5
 	// Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 	#include "DynamicArtilleryPieces\THY_DAP_functions.hpp"
 };

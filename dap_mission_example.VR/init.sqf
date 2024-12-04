@@ -2,6 +2,6 @@
 
 
 
-// DAP: DYNAMIC ARTILLERY PIECES v1.1> HIDE THE SCRIPT MARKERS:
+// DAP: DYNAMIC ARTILLERY PIECES v1.5> HIDE THE SCRIPT MARKERS:
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 if ( !DAP_isOn || !DAP_debug_isOn ) then {{private _mkr = toUpper _x; private _mkrChecking = _mkr splitString DAP_spacer; if (_mkrChecking find DAP_prefix isNotEqualTo -1) then {_x setMarkerAlpha 0}} forEach allMapMarkers};

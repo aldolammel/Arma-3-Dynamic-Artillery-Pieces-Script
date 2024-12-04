@@ -42,18 +42,22 @@ if ( !DAP_isOn || !isServer ) exitWith {};
         // Define each fire-mission should be available for this side. You can add or remove fire-mission rows as you wish.
 
             // Which column means:
-            // [ From BLU [ Target markers, "Sector" ], [ Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
+            // [ From BLU [ Target markers, "Sector" ], [True for real artillery, Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
 
-            //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_MEDIUM, _ammo_CLUSTER, 2, 2], [trg_fm_1, 5]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 4, _caliber_SUPERHEAVY, _ammo_HE, 12, 2], [trg_fm_2, trg_fm_4]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 8, _caliber_SUPERHEAVY, _ammo_HE, 3, 1], [trg_fm_7]] call THY_fnc_DAP_add_firemission;
 
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 8, _caliber_COMBINED, _ammo_SMOKE, 6, 2], [trg_fm_2]] call THY_fnc_DAP_add_firemission;
-            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 3, _caliber_COMBINED, _ammo_HE, 6, 2], [trg_fm_7]] call THY_fnc_DAP_add_firemission;
-            //[BLUFOR, [DAP_targetMrksBLU, "A"], [true, 4, _caliber_COMBINED, _ammo_HE, 6, 2], [trg_fm_7]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 4, _caliber_MEDIUM, _ammo_CLUSTER, 6, 2], [trg_fm_1, trg_fm_4]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 4, _caliber_MEDIUM, _ammo_CLUSTER, 3, 2], [trg_fm_8]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 4, _caliber_MEDIUM, _ammo_CLUSTER, 1, 2], [trg_fm_9]] call THY_fnc_DAP_add_firemission;
 
-            //[BLUFOR, [DAP_targetMrksBLU, "B"], [3, _caliber_LIGHT, _ammo_HE, 6, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 10, _caliber_COMBINED, _ammo_HE, 6, 2], [trg_fm_10, 10]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 6, _caliber_COMBINED, _ammo_HE, 12, 2], [trg_fm_11, unit_target_1, unit_target_2]] call THY_fnc_DAP_add_firemission;
 
-            //[BLUFOR, [DAP_targetMrksBLU, "A"], [5, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_4]] call THY_fnc_DAP_add_firemission;
-            
+            [BLUFOR, [DAP_targetMrksBLU, "A"], [true, 3, _caliber_LIGHT, _ammo_HE, 6, 2], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [true, 2, _caliber_LIGHT, _ammo_SMOKE, 2, 1], [trg_fm_3]] call THY_fnc_DAP_add_firemission;
+
+            [BLUFOR, [DAP_targetMrksBLU, "B"], [false, 2, _caliber_MEDIUM, _ammo_HE, 6, 2], [trg_fm_12, unit_target_2]] call THY_fnc_DAP_add_firemission;
 
     }; // blufor ends.
 
@@ -65,11 +69,10 @@ if ( !DAP_isOn || !isServer ) exitWith {};
         // Define each fire-mission should be available for this side. You can add or remove fire-mission rows as you wish.
 
             // Which column means:
-            // [ From OPF [ Target markers, "Sector" ], [ Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
+            // [ From OPF [ Target markers, "Sector" ], [True for real artillery, Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
 
-            [OPFOR, [DAP_targetMrksOPF, "K"], [10, _caliber_COMBINED, _ammo_HE, 5, 2], [trg_fm_5, 2]] call THY_fnc_DAP_add_firemission;
-            
-            [OPFOR, [DAP_targetMrksOPF, "K"], [5, _caliber_SUPERHEAVY, _ammo_HE, 12, 2], [trg_fm_6]] call THY_fnc_DAP_add_firemission;
+            [OPFOR, [DAP_targetMrksOPF, "A"], [true, 10, _caliber_MEDIUM, _ammo_HE, 5, 2], [trg_fm_5, 2]] call THY_fnc_DAP_add_firemission;
+            [OPFOR, [DAP_targetMrksOPF, "A"], [true, 5, _caliber_MEDIUM, _ammo_HE, 12, 2], [trg_fm_6]] call THY_fnc_DAP_add_firemission;
 
     }; // opfor ends.
 
@@ -82,9 +85,10 @@ if ( !DAP_isOn || !isServer ) exitWith {};
         // Define each fire-mission should be available for this side. You can add or remove fire-mission rows as you wish.
 
             // Which column means:
-            // [ From IND [ Target markers, "Sector" ], [ Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
+            // [ From IND [ Target markers, "Sector" ], [True for real artillery, Number of pieces, Pieces Caliber, Ammo type, Rounds per piece, Repetition cycle ], [ Triggers ] ]
 
-            [INDEPENDENT, [DAP_targetMrksIND, "A"], [1, _caliber_MEDIUM, _ammo_HE, 5, 1], [unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [INDEPENDENT, [DAP_targetMrksIND, "A"], [true, 1, _caliber_MEDIUM, _ammo_HE, 5, 1], [unit_target_1]] call THY_fnc_DAP_add_firemission;
+            [INDEPENDENT, [DAP_targetMrksIND, "A"], [true, 1, _caliber_MEDIUM, _ammo_HE, 5, 1], [unit_target_1]] call THY_fnc_DAP_add_firemission;
             
 
     }; // ind ends.
