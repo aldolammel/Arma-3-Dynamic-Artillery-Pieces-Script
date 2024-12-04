@@ -6,9 +6,11 @@ DAP is an Arma 3 script that allows the Mission Editor (you) to create real (or 
 <img src="dap_mission_example.VR/images/thumb.jpg" />
 
 **Creation concept:**
-make use of artillery-pieces practical, fast, and scalable for multiplayer or single-player missions.
+
+Make use of artillery-pieces practical, fast, and scalable for multiplayer or single-player missions.
 
 **What you set for each fire mission with DAP:**
+
 Unlike other scripts, DAP does not require the editor to specify specific artillery-pieces for each fire-mission. As soon as a fire-mission is triggered, DAP will search for artillery-pieces available at that time that fit the desired caliber, the desired ammunition type, and have range to the target. This means that for the same target, DAP can use different pieces on the map; just as the same artillery-piece can be used for different fire-missions with different targets.
 
 
