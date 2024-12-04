@@ -11,7 +11,7 @@ Make use of artillery-pieces practical, fast, and scalable for multiplayer or si
 
 **Why use DAP to manage artillery:**
 
-Unlike other scripts, DAP does not require the editor to specify specific artillery-pieces for each fire-mission. As soon as a fire-mission is triggered, DAP will search for artillery-pieces available at that time that fit the desired caliber, the desired ammunition type, and have range to the target. This means that for the same target, DAP can use different pieces on the map; just as the same artillery-piece can be used for different fire-missions with different targets.
+​Unlike other scripts, DAP does not require the editor to specify artillery-pieces for each fire-mission. As soon as a fire-mission is triggered, DAP searches for artillery-pieces available at that time that fit the requested caliber, the requested ammunition-type, and have range to the target. This means that for the same target, DAP can use different pieces on the map; just as the same an artillery-piece can be used for multiple fire-missions with different targets. And DAP is absolutely scalable.
 
 
 ## HOW TO INSTALL / DOCUMENTATION
