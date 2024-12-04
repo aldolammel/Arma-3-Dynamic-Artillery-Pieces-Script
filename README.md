@@ -1,11 +1,16 @@
 # Arma-3-Dynamic-Artillery-Pieces-Script v1.5
 >*Dependencies: none.*
 
-DAP is an Arma 3 script that allows the Mission Editor (you) to create real (or virtual) artillery/mortar fire missions faster and smarter for one or multiple sides, using Eden marker’s positions and an external fire missions list where you plan the caliber, ammo type, rounds, cycle of repetition and more.
+DAP is an Arma 3 script that allows the Mission Editor (you) to create real (or virtual) artillery/mortar fire-missions faster and smarter for one or multiple sides, using Eden marker’s positions and an external fire-missions list where you plan the caliber, ammo type, rounds, cycle of repetition and more. DAP doesn't change any original Arma AI behavior, saving server performance, and preserving the Arma integrity and compatibility with any mod.
 
 <img src="dap_mission_example.VR/images/thumb.jpg" />
 
-Creation concept: make use of artillery pieces practical and fast for multiplayer or single-player missions.
+**Creation concept:**
+make use of artillery-pieces practical, fast, and scalable for multiplayer or single-player missions.
+
+**What you set for each fire mission with DAP:**
+Unlike other scripts, DAP does not require the editor to specify specific artillery-pieces for each fire-mission. As soon as a fire-mission is triggered, DAP will search for artillery-pieces available at that time that fit the desired caliber, the desired ammunition type, and have range to the target. This means that for the same target, DAP can use different pieces on the map; just as the same artillery-piece can be used for different fire-missions with different targets.
+
 
 ## HOW TO INSTALL / DOCUMENTATION
 
@@ -20,30 +25,32 @@ __
 ## SCRIPT DETAILS
 
 **What you set for each fire mission with DAP:**
-- Real or virtual fire mission;  (Virtual is WIP)
-- The side that owns the fire mission;
-- Potential target sectors (Eden markers);
-- How much weaponry you want in the fire mission;
-- What caliber these weaponry will be (Light, Medium, Heavy, Super Heavy);
+- Real or virtual fire mission;
+- The side that owns each fire-mission; 
+- Potential target sectors (Eden markers); 
+- How many artillery-pieces you want in each fire-mission; 
+- What caliber these pieces will be (Light, Medium, Heavy, Super Heavy or Combined); 
 - Ammunition type (HE, Cluster, Smoke, Flare etc);
-- Control the volume of rounds;
-- How many cycle repetitions;
-- Triggers that will trigger the fire mission (trigger activation, timer, kill/destruction).
+- Control the volume of rounds per piece; 
+- How many repetition cycles does a fire mission have;
+- Triggers will release the fire-mission (trigger activation, timer, kill/destruction).
 
 **What you set globally with DAP:**
-- Custom callsign for artillery side;
-- Which pieces can use CommandChat to report (On/Off)
+- Custom callsign for each artillery side;
+- Which piece calibers can use CommandChat to report (On/Off);
 - Infinite ammunition (On/Off);
-- Fire mission areas visible on the player map (On/Off)  (WIP)
-- Custom cooldown between cycles of fire mission repetition;
-- Pre-defined whitelist of weaponry working (Arma, DLCs, RHS, CUP, etc);
-- Pre-defined whitelist of ammunition working (Arma, DLCs, RHS, CUP, etc);
-- Pre-defined blacklist of currently bugged vehicles;
+- Prevent artillery-pieces self-propelled to change position (On/Off);
+- Prevent artillery-pieces from starting match with no magazines (On/Off);
+- Fire-mission areas visible on the player map (On/Off)  **WIP**
+- Custom cooldown by caliber among cycles of fire-mission repetition;
+- Pre-defined whitelist of pieces working (Arma, DLCs, CDLCs, RHS, CUP, etc);
+- Pre-defined whitelist of ammunition working (Arma, DLCs, CDLCs, RHS, CUP, etc);
+- Pre-defined blacklist of currently bugged vehicles/static turrets;
 - Pre-defined blacklist of currently bugged ammunition;
-- Debug mode;
-- etc...
+- Debug mode with simple or deep detailing;
+- Etc…
 
-**Automatically DAP library supports content from:**
+**Automatically DAP Library supports content from:**
 - Arma 3;
 - Expansion Apex;
 - DLC Tanks;
@@ -55,8 +62,8 @@ __
 - Mod RHS;
 - Mod CUP.
  
-**How DAP works internally:** (for advanced editors valuation)
-There's a workflow in the first pages of the documentation. Check it out!
+**How DAP works technically:** (before installation for advanced editors’ valuation)
+There's a workflow in the first pages of the documentation. Check that out!
 
 __
 
