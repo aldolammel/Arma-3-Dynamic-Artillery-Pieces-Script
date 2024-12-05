@@ -5,7 +5,7 @@
 
 
 // DAP CORE / TRY TO CHANGE NOTHING BELOW!!! --------------------------------------------------------------------
-if ( !DAP_isOn || !hasInterface ) exitWith {};  // all players clients and player host can read this file.
+if ( !DAP_fmVisible_isOnMap || !DAP_isOn || !hasInterface ) exitWith {};  // all players clients and player host can read this file.
 
 // Soon.
 

@@ -24,7 +24,7 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 	DAP_IND_name = "IND FIRE SUPPORT";      // Name used by DAP when referring to the Independent artillery teams in side Command chat. Default: "";
 
 // Fire-mission general settings:
-	DAP_fmVisible_isOnMap = true;           // (WIP) true = each ally fire-mission hit position is shared with allies temporarilly / false = no markers / Default: true;
+	DAP_fmVisible_isOnMap = false;          // (WIP) true = each ally fire-mission hit position is shared with allies temporarilly / false = no markers / Default: false;
 	DAP_fmVisible_color   = "ColorRed";     // (WIP) 
 	DAP_fmVisible_brush   = "FDiagonal";    // (WIP) 
 	DAP_fmVisible_alpha   = 1;              // (WIP) 0.5 = Minefields barely invisible on the map / 1 = quite visible. Default: 1;

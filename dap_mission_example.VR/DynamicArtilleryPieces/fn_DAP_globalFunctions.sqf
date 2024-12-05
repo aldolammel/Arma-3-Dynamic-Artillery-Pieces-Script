@@ -1421,7 +1421,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 			// Debug message:
 			if ( DAP_debug_isOn && ( DAP_debug_isOnTeamCheck || DAP_debug_isOnAmmo ) ) then {
 				["%1 ASSEMBLING %2 ARTILLERY TEAM > %3 > '%4' approved mag types: %5 = %6.",
-				DAP_txtDebugHeader, _tag, _fmCode, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 5;
+				DAP_txtDebugHeader, _tag, _fmCode, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 0.5;
 			};
 			// Once the candidate has at least one option of the requested ammo-type, it's a finalist:
 			// Important: organizing the structure for the next step as well!
@@ -2253,7 +2253,7 @@ THY_fnc_DAP_add_firemission = {
 	// This function start the schadule of a fire-mission.
 	// Returns nothing.
 	
-	params ["_side", ["_targetsInfo", [[], ""]], ["_fireSetup", [true, 1, "MEDIUM", "HE", 5, 1]], ["_fireTriggers", 1]];
+	params ["_side", ["_targetsInfo", [[], ""]], ["_fireSetup", [false, 1, "MEDIUM", "HE", 5, 1]], ["_fireTriggers", 1]];
 	private ["_tag", "_fmTargetMkrs", "_fmTargetMkrsSector", "_fmCode"];
 	
 	// Initial values:
