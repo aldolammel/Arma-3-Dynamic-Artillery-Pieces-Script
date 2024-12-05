@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.5
+// DAP: Dynamic Artillery Pieces v1.5.1
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_globalFunctions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -123,7 +123,7 @@ THY_fnc_DAP_is_position_valid = {
 	} else {
 		// Warning message:
 		systemChat format ["%1 WORLD POSITION '%2' > This marker or piece has an invalid position and it'll be ignored until its position is within the map borders.",
-		DAP_txtWarnHeader, toUpper _thing];
+		DAP_txtWarnHeader, toUpper (str _thing)];
 	};
 	// Return:
 	_isValid;
@@ -300,7 +300,7 @@ THY_fnc_DAP_pieces_scanner = {
 	// Return: _confirmedPieces: array
 
 	params ["_prefix", "_spacer"];
-	private ["_confirmedPieces", "_sidesOn", "_isValid", "_piece", "_ctrBLU", "_ctrOPF", "_ctrIND", "_nameStructure", "_piecesBLU", "_piecesOPF", "_piecesIND", "_possiblePieces"];
+	private ["_confirmedPieces", "_sidesOn", "_isValid", "_piece", "_ctrBLU", "_ctrOPF", "_ctrIND", "_nameStructure", "_pieces", "_groupSplitted", "_piecesBLU", "_piecesOPF", "_piecesIND", "_possiblePieces"];
 
 	// Initial values:
 	_confirmedPieces = [];
@@ -311,6 +311,8 @@ THY_fnc_DAP_pieces_scanner = {
 	_ctrOPF          = 0;
 	_ctrIND          = 0;
 	_nameStructure   = [];
+	_pieces          = [];
+	_groupSplitted   = grpNull;
 	_piecesBLU       = [];
 	_piecesOPF       = [];
 	_piecesIND       = [];
@@ -319,8 +321,8 @@ THY_fnc_DAP_pieces_scanner = {
 	if DAP_OPF_isOn then { _sidesOn pushBack OPFOR };
 	if DAP_IND_isOn then { _sidesOn pushBack INDEPENDENT };
 	// Selecting the relevant markers:
-	// Critical: careful because 'vehicles' command brings lot of trash along: https://community.bistudio.com/wiki/vehicles
-	_possiblePieces = vehicles select { !isNull (gunner _x) && side (leader _x) in _sidesOn && (toUpper (str _x) find (_prefix + _spacer)) isNotEqualTo -1 };
+	// Important: don't check here if there's gunner. It's important some message feedbacks to the editor if a gunner is out, so DAP does this later!
+	_possiblePieces = vehicles select { side (leader _x) in _sidesOn && (toUpper (str _x) find (_prefix + _spacer)) isNotEqualTo -1 };
 	// Debug message:
 	if DAP_debug_isOn then { systemChat format ["%1 Artillery-pieces found: %2 from DAP.", DAP_txtDebugHeader, count _possiblePieces] };
 	// Escape > If no _possiblePieces found:
@@ -336,10 +338,17 @@ THY_fnc_DAP_pieces_scanner = {
 		_isValid = [1, _x] call THY_fnc_DAP_is_position_valid;
 		// If something wrong, remove the object (vehicle) from the list and from the map:
 		if !_isValid then {
-			deleteVehicle _x;
-			_possiblePieces deleteAt (_possiblePieces find _x);
+			// Checking if it's marker or piece:
+			if ( typeName _x isEqualTo "OBJECT" ) then {
+				// It's a piece (obj):
+				deleteVehicleCrew _x; deleteVehicle _x;
+			} else {
+				// It's a marker:
+				deleteMarker _x;
+			};
+			_possiblePieces deleteAt _forEachIndex;
 		};
-	} forEach _possiblePieces;
+	} forEachReversed _possiblePieces;
 	// Escape > All _possiblePieces deleted during position check:
 	if ( count _possiblePieces isEqualTo 0 ) exitWith {
 		// Warning message:
@@ -353,18 +362,59 @@ THY_fnc_DAP_pieces_scanner = {
 	{  // forEach _possiblePieces:
 		_piece = _x;
 		// Escape > if weaponey side is civilian, skip to the next _piece:
-		if ( side _piece isEqualTo CIVILIAN ) then { systemChat format ["%1 ARTILLERY-PIECES '%2' > You cannot use Civilian with DAP! Piece ignored!", DAP_txtWarnHeader, _piece]; continue };
+		if ( side _piece isEqualTo CIVILIAN ) then {
+			systemChat format ["%1 ARTILLERY-PIECES '%2' > You cannot use Civilian with DAP! Piece ignored!",
+			DAP_txtWarnHeader, _piece];
+			// Go next:
+			continue;
+		};
 		// check if the _piece name has _spacer character enough in its string composition:
 		_nameStructure = [1, _piece, _prefix] call THY_fnc_DAP_name_splitter;
 		// Escape > if invalid structure, skip to the next _piece:
-		if ( count _nameStructure < 2 ) then { continue };
-		// Fixing possible editor's mistakes:
+		if ( count _nameStructure < 2 ) then {
+			systemChat format ["%1 ARTILLERY-PIECES '%2' > Variable-name structure's wrong! Use '%3%4anyNumber' or 'something%4%3' or 'something%4%3%4something'. For now, piece ignored!",
+			DAP_txtWarnHeader, _piece, _prefix, _spacer];
+			continue;
+		};
+
+		// FIXING:
+		// If unit's out of their piece, this unit is deleted:
+		{  // Important: it's crucial because if a driver stay out, it'll bring en error during the firing, involving the effectiveCommander and its _mag!
+			if ( isNull objectParent _x ) then {
+				// Warning message:
+				systemChat format ["%1 ARTILLERY-PIECES '%2' > The unit '%3' was deleted 'cause they were outside their piece.",
+				DAP_txtWarnHeader, toUpper (str _piece), toUpper (str _x)];
+				// Deletion:
+				deleteVehicle _x;
+			};
+		} forEach units (group _piece);
+		// If that deleted unit was a gunner, delete the entire piece and its remaining crew:
+		if ( isNull gunner _piece ) then {
+			// Warning message:
+			systemChat format ["%1 ARTILLERY-PIECES '%2' > This artillery-piece was deleted 'cause its gunner was outside the weaponry. Fix it!",
+			DAP_txtWarnHeader, toUpper (str _piece), toUpper (str _x)];
+			// Deletion:
+			deleteVehicleCrew _piece; deleteVehicle _piece;
+		};
+		// If more than one piece in the group, split it:
+		{ _pieces pushBackUnique (vehicle _x) } forEach units (group _piece);  // It's possible a piece gets more than one gunner!
+		if ( count _pieces > 1 ) then {
+			{
+				// Skip the first piece:
+				if ( _forEachIndex isEqualTo 0 ) then { continue };
+				// Other piece, creating a new group:
+				_groupSplitted = createGroup [side _x, true];  // [side, deleteWhenEmpty]
+				// Transfering the other piece crew from the original group to the new one:
+				crew _x joinSilent _groupSplitted;
+			} forEach _pieces;
+		};
+		// Management fixing options:
 		if DAP_artill_preventDynamicSim then { group _piece enableDynamicSimulation false };  // CRUCIAL for long distances!
 		if DAP_artill_preventStartNoMags then { [_piece] call THY_fnc_VO_restore_ammo_capacity };
 		if DAP_artill_preventUnlocked then { _piece setVehicleLock "LOCKEDPLAYER" };
-		// Adding extra configs:
 		if DAP_artill_preventMoving then { (driver _piece) disableAI "MOVE" };
 
+		// ADDING FEATURES:
 		// WIP THERMAL SIGNATURE: if DAP_artill_isForcedThermalSignat then { [_piece, [1,0,1]] remoteExec ["setVehicleTiPars"] };  // [engine, wheels, weapon] / 1=hot / 0.5=warm / 0=cool
 
 		// If all validations alright:

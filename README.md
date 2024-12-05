@@ -77,6 +77,12 @@ __
 
 ## CHANGELOG
 
+**Dec, 5th 2024 | v1.5.1**
+
+- Added the position checker for artillery and target-markers to verify whether within the map borders;
+- Added autofix if editor include multiple artillery-pieces in the same group;
+- Fixed the error when the editor, for any reason, removes part of the artillery crew;
+
 **Dec, 4th 2024 | v1.5**
 
 - Added native support to artillery-pieces from CDLC Expeditionary Forces;

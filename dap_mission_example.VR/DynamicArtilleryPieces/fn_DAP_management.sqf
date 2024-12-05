@@ -37,7 +37,7 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 	DAP_artill_isInfiniteAmmo          = true;   // true = after each fire-mission cycle, the piece is magically reloaded / false = no magic / Default: true;
 	DAP_artill_forcedRearm             = true;   // (WIP) true = forced rearm even for piece with barely full ammo / false = only when low or no ammo / Default: true;
 	DAP_artill_preventStartNoMags      = false;  // (WIP) true = DAP prevents pieces to start with no mags (mods are bugged and it'll help) / false = Editor decides / Default: false;
-	DAP_artill_preventUnlocked         = false;  // (WIP) true = DAP locks for players all artillery-pieces where it's possible / false = Editor decides / Default: true;
+	DAP_artill_preventUnlocked         = true;   // true = DAP locks for players all artillery-pieces where it's possible / false = Editor decides / Default: true;
 	DAP_artill_preventMoving           = true;   // true = DAP prevents piece self-propelled to change its position / false = Arma decides (NOT RECOMMENDED) / Default: true;
 	DAP_artill_preventDynamicSim       = true;   // true = DAP prevents pieces to freeze at big distances / false = doesn't prevent (NOT RECOMMENDED) / Default: true;
 	DAP_artill_isForcedThermalSignat   = false;  // (WIP) true = force DAP pieces emit heat signature, even if engines off / false = Arma decides / Default: false;
