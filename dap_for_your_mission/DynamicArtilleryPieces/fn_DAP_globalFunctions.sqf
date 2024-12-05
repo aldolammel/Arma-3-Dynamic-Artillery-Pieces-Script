@@ -142,10 +142,11 @@ THY_fnc_DAP_marker_shape = {
 	// Declarations:
 	_mkrType = getMarkerType _mkr;
 	// Main functionality:
-	if ( _mkrType isEqualTo DAP_fmVisible_type ) then { _isValidShape = true } else {
+	if ( _mkrType in DAP_fmVisible_type ) then { _isValidShape = true } else {
 		// Warning message:
-		systemChat format ["%1 TARGET MARKER > The %2 '%3' marker DOESN'T HAVE the correct shape. For any target-marker, use '%4' marker! This marker was ignored.",
-		DAP_txtWarnHeader, _mkrType, _mkr, DAP_fmVisible_type];
+		systemChat format ["%1 TARGET MARKER > Your '%2' marker DOESN'T HAVE the correct shape. You're using the '%3' marker-type, while you should use one of these: '%4'. That marker was deleted.",
+		DAP_txtWarnHeader, _mkr, _mkrType, DAP_fmVisible_type];
+		deleteMarker _mkr;
 	};
 	// Return:
 	_isValidShape;

@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.5
+// DAP: Dynamic Artillery Pieces v1.5.1
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_management.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -25,7 +25,6 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 
 // Fire-mission general settings:
 	DAP_fmVisible_isOnMap = true;           // (WIP) true = each ally fire-mission hit position is shared with allies temporarilly / false = no markers / Default: true;
-	DAP_fmVisible_type    = "mil_destroy";  // Eden marker type you're using to set targets for DAP. Recommended not change. Default: "mil_destroy";
 	DAP_fmVisible_color   = "ColorRed";     // (WIP) 
 	DAP_fmVisible_brush   = "FDiagonal";    // (WIP) 
 	DAP_fmVisible_alpha   = 1;              // (WIP) 0.5 = Minefields barely invisible on the map / 1 = quite visible. Default: 1;
@@ -138,8 +137,6 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 
 
 // DAP CORE / TRY TO CHANGE NOTHING BELOW!!! --------------------------------------------------------------------
-// Global escape:
-if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script was turned off manually via 'fn_DAP_management.sqf' file.", DAP_txtWarnHeader]}};
 // When the mission starts:
 [] spawn {
 	// Local object declarations:
@@ -152,11 +149,16 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	DAP_fmScheduled          = [[/* blu */],[/* opf */],[/* ind */]];
 	DAP_piecesNeedRearm      = [[/* blu */],[/* opf */],[/* ind */]];
 	DAP_groupIdsForDisbanded = [[/* blu */],[/* opf */],[/* ind */]];
-	// Declarations:
+	// Declarations - part 1/2:
+	DAP_fmVisible_type = ["mil_destroy","hd_destroy"];
 	DAP_txtDebugHeader = toUpper "DAP DEBUG >";
 	DAP_txtWarnHeader  = toUpper "DAP WARNING >";
 	DAP_prefix         = toUpper "DAP";  // CAUTION: NEVER include/insert the DAP_spacer character as part of the DAP_prefix too.
 	DAP_spacer         = toUpper "_";    // CAUTION: try do not change it!
+	// Global escape:
+	if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script was turned off manually via 'fn_DAP_management.sqf' file.", DAP_txtWarnHeader]}};
+	if (DAP_isOn && !DAP_BLU_isOn && !DAP_OPF_isOn && !DAP_IND_isOn) exitWith {DAP_isOn=false; systemChat format ["%1 You turned off all sides but you're keeping the 'DAP_isOn' as 'true' in fn_DAP_management.sqf file. To fix it, turn one or more sides 'true', or turn the 'DAP_isOn' to 'false'. The script stopped automatically!", DAP_txtWarnHeader]};
+	// Declarations - part 2/2:
 	DAP_piecesCaliber_light =
 		// Pieces Light
 		((DAP_knownPieces_howitzer # 0) # 1) +  // Pieces Howitzer type
@@ -248,7 +250,7 @@ if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script
 	if (count (DAP_targetMrksBLU + DAP_targetMrksOPF + DAP_targetMrksIND) isEqualTo 0) exitWith { DAP_isOn = false; publicVariable "DAP_isOn"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND"; systemChat format ["%1 No target-markers on the mission. The script stopped automatically!", DAP_txtWarnHeader]};
 	// Handling errors:
 	if (DAP_wait < 1) then {DAP_wait = 1};  // Important to hold some functions and make their warning (if got) to show only in-game for mission editor.
-	if (DAP_fireMissionBreath < 2) then {DAP_fireMissionBreath=2; if DAP_debug_isOn then {systemChat format ["%1 'DAP_fireMissionBreath' CANNOT be set lower than %2s. DAP automatically changed it to the lowest value possible: (%2).", DAP_txtDebugHeader, DAP_fireMissionBreath]}}; if (DAP_fmVisible_type isEqualTo "") then {DAP_fmVisible_type="mil_destroy"; systemChat format ["%1 'DAP_fmVisible_type' CANNOT be empty. DAP automatically changed it to the default value (''%2'').", DAP_txtWarnHeader, DAP_fmVisible_type]}; DAP_fmVirtualETA = abs (round DAP_fmVirtualETA);
+	if (DAP_fireMissionBreath < 2) then {DAP_fireMissionBreath=2; if DAP_debug_isOn then {systemChat format ["%1 'DAP_fireMissionBreath' CANNOT be set lower than %2s. DAP automatically changed it to the lowest value possible: (%2).", DAP_txtDebugHeader, DAP_fireMissionBreath]}}; DAP_fmVirtualETA = abs (round DAP_fmVirtualETA);
 	// Escape > If an error that compromises the DAP consistency take place:
 	if ([_knownPiecesAll, _knownMagsAll, DAP_pieces_forbidden, DAP_maganizes_forbidden, DAP_txtWarnHeader] call THY_fnc_DAP_initial_validation) exitWith { DAP_isOn = false; publicVariable "DAP_isOn"; publicVariable "DAP_targetMrksBLU"; publicVariable "DAP_targetMrksOPF"; publicVariable "DAP_targetMrksIND"; systemChat format ["%1 The script stopped automatically!", DAP_txtWarnHeader]};
 	// Using debug mode:
