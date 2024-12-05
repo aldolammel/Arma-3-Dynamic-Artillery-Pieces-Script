@@ -304,7 +304,7 @@ THY_fnc_DAP_pieces_scanner = {
 	private ["_confirmedPieces", "_sidesOn", "_isValid", "_piece", "_ctrBLU", "_ctrOPF", "_ctrIND", "_nameStructure", "_pieces", "_groupSplitted", "_piecesBLU", "_piecesOPF", "_piecesIND", "_possiblePieces"];
 
 	// Initial values:
-	_confirmedPieces = [];
+	_confirmedPieces = [[[]],[[]],[[]]];
 	_sidesOn         = [];
 	_isValid         = false;
 	_piece           = objNull;
@@ -326,11 +326,11 @@ THY_fnc_DAP_pieces_scanner = {
 	_possiblePieces = vehicles select { side (leader _x) in _sidesOn && (toUpper (str _x) find (_prefix + _spacer)) isNotEqualTo -1 };
 	// Debug message:
 	if DAP_debug_isOn then { systemChat format ["%1 Artillery-pieces found: %2 from DAP.", DAP_txtDebugHeader, count _possiblePieces] };
-	// Escape > If no _possiblePieces found:
+	// If editor probably is using Virtual artillery:
 	if ( count _possiblePieces isEqualTo 0 ) exitWith {
-		// Warning message:
-		systemChat format ["%1 ARTILLERY-PIECES > This mission still HAS NO ARTILLERY-PIECES (Howitzers or MRL's or Mortars) to be used for. DAP pieces must have their structure names like '%2%3anynumber'. Reminder: no need to add a side-tag in the piece variable-name as seen in markers!",
-		DAP_txtWarnHeader, _prefix, _spacer];
+		// Debug:
+		systemChat format ["%1 ARTILLERY-PIECES > NO REAL artillery-pieces were found (Howitzers or MRL's or Mortars). It's okay if you're using only VIRTUAL artillery. Just checking.",
+		DAP_txtDebugHeader];
 		// Returning:
 		_confirmedPieces;
 	};

@@ -84,6 +84,7 @@ __
 - Added tolerance to 'hd_destroy' marker-type as target too;
 - Improved, if the editor turns off accidentally all sides through the mananagement file, DAP turns the script off automatically;
 - Fixed the error when the editor, for any reason, removes part of the artillery crew;
+- Fixed the behavior where DAP was turning itself off if no artillery for it (Now DAP can be used only for virtual artillery).
 
 **Dec, 4th 2024 | v1.5**
 

@@ -242,8 +242,8 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 	if (DAP_BLU_name isEqualTo "") then {DAP_BLU_name = "BLU FIRE SUPPORT"} else {DAP_BLU_name = toUpper DAP_BLU_name}; if (DAP_OPF_name isEqualTo "") then {DAP_OPF_name = "OPF FIRE SUPPORT"} else {DAP_OPF_name = toUpper DAP_OPF_name}; if (DAP_IND_name isEqualTo "") then {DAP_IND_name = "IND FIRE SUPPORT"} else {DAP_IND_name = toUpper DAP_IND_name}; 
 	_confirmedPieces = [DAP_prefix, DAP_spacer] call THY_fnc_DAP_pieces_scanner;
 	DAP_piecesBLU = (_confirmedPieces # 0) # 0; DAP_piecesOPF = (_confirmedPieces # 1) # 0; DAP_piecesIND = (_confirmedPieces # 2) # 0;
-	// Escape > If no artillery pieces, abort:
-	if (count (DAP_piecesBLU + DAP_piecesOPF + DAP_piecesIND) isEqualTo 0) exitWith { DAP_isOn = false; publicVariable "DAP_isOn"; systemChat format ["%1 No specific artillery pieces available on the mission. The script stopped automatically!", DAP_txtWarnHeader]};
+	// Escape > If no artillery pieces, abort (deprecated after virtual artillery implementation in v1.5):
+	//if (count (DAP_piecesBLU + DAP_piecesOPF + DAP_piecesIND) isEqualTo 0) exitWith { DAP_isOn = false; publicVariable "DAP_isOn"; systemChat format ["%1 No specific artillery pieces available on the mission. The script stopped automatically!", DAP_txtWarnHeader]};
 	_confirmedMkrs = [DAP_prefix, DAP_spacer] call THY_fnc_DAP_marker_scanner;
 	DAP_targetMrksBLU = (_confirmedMkrs # 0) # 0; DAP_targetMrksOPF = (_confirmedMkrs # 1) # 0; DAP_targetMrksIND = (_confirmedMkrs # 2) # 0;
 	// Escape > If no confirmed markers, abort:
@@ -279,19 +279,19 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_BLU_isOn && count DAP_targetMrksBLU > 0 && count DAP_piecesBLU > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			systemChat format ["%1 %2 got %3 real artillery-piece(s) ready for %4 target-marker(s).",
 			DAP_txtDebugHeader, DAP_BLU_name, count DAP_piecesBLU, count DAP_targetMrksBLU];
 		};
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_OPF_isOn && count DAP_targetMrksOPF > 0 && count DAP_piecesOPF > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			systemChat format ["%1 %2 got %3 real artillery-piece(s) ready for %4 target-marker(s).",
 			DAP_txtDebugHeader, DAP_OPF_name, count DAP_piecesOPF, count DAP_targetMrksOPF];
 		};
 		// If the specific side is ON and has at least 1 spawnpoint:
 		if ( DAP_IND_isOn && count DAP_targetMrksIND > 0 && count DAP_piecesIND > 0 ) then {
 			// Message:
-			systemChat format ["%1 %2 got %3 artillery-piece(s) ready for %4 target-marker(s).",
+			systemChat format ["%1 %2 got %3 real artillery-piece(s) ready for %4 target-marker(s).",
 			DAP_txtDebugHeader, DAP_IND_name, count DAP_piecesIND, count DAP_targetMrksIND];
 		};
 	};
