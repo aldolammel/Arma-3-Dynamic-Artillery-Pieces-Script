@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.5.1
+// DAP: Dynamic Artillery Pieces v1.5.2
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_globalFunctions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -35,59 +35,19 @@ if !DAP_isOn exitWith {};
 
 THY_fnc_DAP_name_splitter = {
 	// This function splits the variable-name (marker or object) to check if the name has the basic structure for further validations.
-	// Important: i'm checking what the editor is using as DAP_spacer in management file and there I'm setting a limit to use just _ or -.
 	// Returns _nameStructure: array
 
-	params ["_what", "_name", "_prefix"];
-	private ["_nameStructure", "_minSectionAmount", "_spacer", "_a", "_b"];
+	params ["_what", "_name", "_prefix", "_spacer"];
+	private ["_nameStructure"];
 
 	// Initial values:
-	_nameStructure    = [];
-	_minSectionAmount = 2;
-	_spacer           = "";
-	// Errors handling:
-		// reserved space.
-	// Escape:
-		// reserved space.
+	_nameStructure = [];
+	// spliting the name to check its structure:
 	switch _what do {
-		// Artillery Piece
-		case 1: {
-			// FUNDAMENT for this weird pieces-varname check: unlike markers that DAP has a restricted naming rules, for pieces, I'm assuming some cases the Editor
-			// can be running another script where vehicles (for example) could be using restricted naming rules where all DAP will consider whether the vehicle has,
-			// at least, 'DAP' in some moment of the varname.
-			_name = str _name;
-			_a = count (_name splitString "_");
-			_b = count (_name splitString "-");
-			// The name structure has at least X sections:
-			if ( _a >= _minSectionAmount || _b >= _minSectionAmount ) then {
-				// If A section's amount is not equal to B section amount:
-				if ( _a isNotEqualTo _b ) then {
-					if ( _a > _b ) then { _spacer = "_" } else { _spacer = "-" };
-					// spliting the object name to check its structure:
-					_nameStructure = _name splitString _spacer;  // for pieces of artillery, e.g. ["DAP", ...] or [..., "DAP"] or [..., "DAP", ...]
-				// Otherwise, A and B has the same section amount:
-				} else {
-					// Warning message:
-					systemChat format ["%1 ARTILLERY-PIECES '%2' > This name's structure IS NOT correct! Decide if you'll use '_' or '-' as spacer in piece variable-names. You can use like '%3%4...' or '...%4%3%4...' or '...%4%3'. This piece has been ignored.",
-					DAP_txtWarnHeader, _name, _prefix, DAP_spacer];
-					// Update to return as failed:
-					_nameStructure = [];
-				};
-			};
-		};
-		// Marker
-		case 2: {
-			// spliting the marker name to check its structure:
-			_nameStructure = _name splitString DAP_spacer;  // e.g. ["DAP","OPF","C","1"]
-			// if the _spacer is NOT been used correctly:
-			if ( count _nameStructure isNotEqualTo 4 ) then {
-				// Warning message:
-				systemChat format ["%1 TARGET MARKER '%2' > This marker name's structure look's NOT correct! DAP target markers must have their structure names like '%3%4BLU%4sectorletter%4anynumber' for example. The marker has been ignored.",
-				DAP_txtWarnHeader, _name, _prefix, DAP_spacer];
-				// Update to return as failed:
-				_nameStructure = [];
-			};
-		};
+		// Piece:
+		case 1: { _nameStructure = str _name splitString _spacer };  // ["DAP", ...] or [..., "DAP"] or [..., "DAP", ...]
+		// Marker:
+		case 2: { _nameStructure = _name splitString _spacer };  // ["DAP","OPF","C","1"]
 	};
 	// Return:
 	_nameStructure;
@@ -122,8 +82,10 @@ THY_fnc_DAP_is_position_valid = {
 	// Otherwise, if not on map area:
 	} else {
 		// Warning message:
-		systemChat format ["%1 WORLD POSITION '%2' > This marker or piece has an invalid position and it'll be ignored until its position is within the map borders.",
-		DAP_txtWarnHeader, toUpper (str _thing)];
+		systemChat format ["%1 WORLD POSITION '%2' > This %3 has an invalid position and it'll be deleted until its position is within the map borders.",
+		DAP_txtWarnHeader,
+		toUpper (str _thing),
+		if (_what isEqualTo 1) then {"ARTILLERY"} else {"TARGET-MARKER"}];
 	};
 	// Return:
 	_isValid;
@@ -301,30 +263,45 @@ THY_fnc_DAP_pieces_scanner = {
 	// Return: _confirmedPieces: array
 
 	params ["_prefix", "_spacer"];
-	private ["_confirmedPieces", "_sidesOn", "_isValid", "_piece", "_ctrBLU", "_ctrOPF", "_ctrIND", "_nameStructure", "_pieces", "_groupSplitted", "_piecesBLU", "_piecesOPF", "_piecesIND", "_possiblePieces"];
+	private ["_confirmedPieces", "_sidesOn", "_isValid", "_piece", "_ctrBLU", "_ctrOPF", "_ctrIND", "_nameStructure", "_additionalPieces", "_groupSplitted", "_piecesBLU", "_piecesOPF", "_piecesIND", "_possiblePieces"];
 
 	// Initial values:
-	_confirmedPieces = [[[]],[[]],[[]]];
-	_sidesOn         = [];
-	_isValid         = false;
-	_piece           = objNull;
-	_ctrBLU          = 0;
-	_ctrOPF          = 0;
-	_ctrIND          = 0;
-	_nameStructure   = [];
-	_pieces          = [];
-	_groupSplitted   = grpNull;
-	_piecesBLU       = [];
-	_piecesOPF       = [];
-	_piecesIND       = [];
+	_confirmedPieces  = [[[]],[[]],[[]]];
+	_sidesOn          = [];
+	_isValid          = false;
+	_piece            = objNull;
+	_ctrBLU           = 0;
+	_ctrOPF           = 0;
+	_ctrIND           = 0;
+	_nameStructure    = [];
+	_additionalPieces = [];
+	_groupSplitted    = grpNull;
+	_piecesBLU        = [];
+	_piecesOPF        = [];
+	_piecesIND        = [];
 	// Declarations: 
 	if DAP_BLU_isOn then { _sidesOn pushBack BLUFOR };
 	if DAP_OPF_isOn then { _sidesOn pushBack OPFOR };
 	if DAP_IND_isOn then { _sidesOn pushBack INDEPENDENT };
-	// Selecting the relevant markers:
+
+	// STEP 1/4 > Selecting the flagged artillery-pieces for DAP:
 	// Important: don't check here if there's gunner. It's important some message feedbacks to the editor if a gunner is out, so DAP does this later!
-	_possiblePieces = vehicles select { side (leader _x) in _sidesOn && (toUpper (str _x) find (_prefix + _spacer)) isNotEqualTo -1 };
-	// Debug message:
+	_possiblePieces = vehicles select { side (leader _x) in _sidesOn && (toUpper (str _x) find _prefix) isNotEqualTo -1 };
+	{  // forEachReversed _possiblePieces:
+		_piece = _x;
+		// check if the _piece name has _spacer character enough in its string composition:
+		_nameStructure = [1, _piece, _prefix, _spacer] call THY_fnc_DAP_name_splitter;
+		// Escape > if invalid structure, skip to the next piece:
+		if ( count _nameStructure < 2 ) then {
+			systemChat format ["%1 ARTILLERY-PIECES '%2' > Variable-name structure's wrong! Use '%3%4anyNumber' or 'something%4%3' or 'something%4%3%4something'. For now, piece deleted!",
+			DAP_txtWarnHeader, _piece, _prefix, _spacer];
+			// Delete the crew and the piece
+			deleteVehicleCrew _piece; deleteVehicle _piece; _possiblePieces deleteAt _forEachIndex;
+			// Go next:
+			//continue;
+		};
+	} forEachReversed _possiblePieces;
+	// Debug:
 	if DAP_debug_isOn then { systemChat format ["%1 Artillery-pieces found: %2 from DAP.", DAP_txtDebugHeader, count _possiblePieces] };
 	// If editor probably is using Virtual artillery:
 	if ( count _possiblePieces isEqualTo 0 ) exitWith {
@@ -334,8 +311,9 @@ THY_fnc_DAP_pieces_scanner = {
 		// Returning:
 		_confirmedPieces;
 	};
-	// Validating each piece position:
-	{  // forEach _possiblePieces:
+
+	// STEP 2/4 > Validating each piece position:
+	{  // forEachReversed _possiblePieces:
 		_isValid = [1, _x] call THY_fnc_DAP_is_position_valid;
 		// If something wrong, remove the object (vehicle) from the list and from the map:
 		if !_isValid then {
@@ -353,62 +331,63 @@ THY_fnc_DAP_pieces_scanner = {
 	// Escape > All _possiblePieces deleted during position check:
 	if ( count _possiblePieces isEqualTo 0 ) exitWith {
 		// Warning message:
-		systemChat format ["%1 ARTILLERY-PIECES > Looks like all artillery-pieces available were out of the map borders and were deleted.",
+		systemChat format ["%1 ARTILLERY-PIECES > Looks like all artillery-pieces available were out of the map borders and were deleted. Fix it!",
 		DAP_txtWarnHeader];
 		// Returning:
 		_confirmedPieces;
 	};
 
-	// Step 2/2 > Ignoring from the first pieces list that doesn't fit the name's structure rules, and creating new lists:
-	{  // forEach _possiblePieces:
+	// STEP 3/4 > Checking the consistence of the piece's group:
+	{  // forEachReversed _possiblePieces:
 		_piece = _x;
-		// Escape > if weaponey side is civilian, skip to the next _piece:
-		if ( side _piece isEqualTo CIVILIAN ) then {
-			systemChat format ["%1 ARTILLERY-PIECES '%2' > You cannot use Civilian with DAP! Piece ignored!",
-			DAP_txtWarnHeader, _piece];
-			// Go next:
-			continue;
-		};
-		// check if the _piece name has _spacer character enough in its string composition:
-		_nameStructure = [1, _piece, _prefix] call THY_fnc_DAP_name_splitter;
-		// Escape > if invalid structure, skip to the next _piece:
-		if ( count _nameStructure < 2 ) then {
-			systemChat format ["%1 ARTILLERY-PIECES '%2' > Variable-name structure's wrong! Use '%3%4anyNumber' or 'something%4%3' or 'something%4%3%4something'. For now, piece ignored!",
-			DAP_txtWarnHeader, _piece, _prefix, _spacer];
-			continue;
-		};
-
-		// FIXING:
 		// If unit's out of their piece, this unit is deleted:
 		{  // Important: it's crucial because if a driver stay out, it'll bring en error during the firing, involving the effectiveCommander and its _mag!
 			if ( isNull objectParent _x ) then {
 				// Warning message:
 				systemChat format ["%1 ARTILLERY-PIECES '%2' > The unit '%3' was deleted 'cause they were outside their piece.",
 				DAP_txtWarnHeader, toUpper (str _piece), toUpper (str _x)];
-				// Deletion:
+				// Delete the unit by foot:
 				deleteVehicle _x;
 			};
 		} forEach units (group _piece);
 		// If that deleted unit was a gunner, delete the entire piece and its remaining crew:
 		if ( isNull gunner _piece ) then {
 			// Warning message:
-			systemChat format ["%1 ARTILLERY-PIECES '%2' > This artillery-piece was deleted 'cause its gunner was outside the weaponry. Fix it!",
+			systemChat format ["%1 ARTILLERY-PIECES '%2' > This artillery-piece was deleted 'cause its gunner was out of the weaponry.",
 			DAP_txtWarnHeader, toUpper (str _piece), toUpper (str _x)];
-			// Deletion:
-			deleteVehicleCrew _piece; deleteVehicle _piece;
+			// Delete the crew and the piece
+			deleteVehicleCrew _piece; deleteVehicle _piece; _possiblePieces deleteAt _forEachIndex;
+			// Go next:
+			//continue;
 		};
-		// If more than one piece in the group, split it:
-		{ _pieces pushBackUnique (vehicle _x) } forEach units (group _piece);  // It's possible a piece gets more than one gunner!
-		if ( count _pieces > 1 ) then {
+	} forEachReversed _possiblePieces;
+	// Restarting to go deeper:
+	{  // forEach _possiblePieces:
+		// If more than one piece in the group, store it:
+		{ _additionalPieces pushBackUnique (vehicle _x) } forEach units (group _piece);
+		// If more than one group piece stored:
+		if ( count _additionalPieces > 1 ) then {
 			{
-				// Skip the first piece:
+				// Skip the first group's piece:
 				if ( _forEachIndex isEqualTo 0 ) then { continue };
 				// Other piece, creating a new group:
 				_groupSplitted = createGroup [side _x, true];  // [side, deleteWhenEmpty]
-				// Transfering the other piece crew from the original group to the new one:
+				// Transfering the other piece's crew from the original group to the new one:
 				crew _x joinSilent _groupSplitted;
-			} forEach _pieces;
+				// Debug:
+				if DAP_debug_isOn then {
+					systemChat format ["%1 ARTILLERY-PIECES > A %2 artillery was divided from its original group. One artillery per group. For now, DAP already fixed it.",
+					DAP_txtDebugHeader, side _x];
+				};
+			} forEach _additionalPieces;
+			// Clean up to the next piece check:
+			_additionalPieces = [];
 		};
+	} forEach _possiblePieces;
+
+	// STEP 4/4 > Approved ones, final touch and preparing to return divided by side:
+	{  // forEach _possiblePieces:
+		_piece = _x;
 		// Management fixing options:
 		if DAP_artill_preventDynamicSim then { group _piece enableDynamicSimulation false };  // CRUCIAL for long distances!
 		if DAP_artill_preventStartNoMags then { [_piece] call THY_fnc_VO_restore_ammo_capacity };
@@ -439,8 +418,6 @@ THY_fnc_DAP_pieces_scanner = {
 			};
 		};
 	} forEach _possiblePieces;
-	// Destroying unnecessary things:
-	_possiblePieces = nil;
 	// Updating the general list to return:
 	// Important: I'm using this structure, imagining in future the pieces from side can be stored by class or something else. So first index always BLU, and so on.
 	_confirmedPieces = [
@@ -498,7 +475,7 @@ THY_fnc_DAP_marker_scanner = {
 	{  // forEach _possibleMkrs:
 		_mkr = toUpper _x;
 		// check if the marker name has DAP_spacer character enough in its string composition:
-		_nameStructure = [2, _mkr, _prefix] call THY_fnc_DAP_name_splitter;
+		_nameStructure = [2, _mkr, _prefix, _spacer] call THY_fnc_DAP_name_splitter;
 		// Escape > if invalid structure, skip to the next marker:
 		if ( count _nameStructure isEqualTo 0 ) then { continue };
 		// Check the type of marker:
@@ -540,7 +517,7 @@ THY_fnc_DAP_marker_scanner = {
 	} forEach _possibleMkrs;
 	// Destroying unnecessary things:
 	_possibleMkrs = nil;
-	// Debug message:
+	// Debug:
 	if DAP_debug_isOn then { systemChat format ["%1 Artillery target-markers found: %2 from DAP.", DAP_txtDebugHeader, count (_targetMkrsBLU + _targetMkrsOPF + _targetMkrsIND)] };
 	// Updating the general list to return:
 	// Important: I'm using this structure, imagining in future the markers from side can be stored by class or something else. So first index always BLU, and so on.
@@ -1381,7 +1358,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 	// Filtering the current side-pieces by those that are the requested caliber and have some ammunition:
 	// Checking the caliber:
 	{ if ( typeOf _x in _libraryCaliber ) then { _candidates pushBack _x } } forEach _preCandidates;
-	// Debug message:
+	// Debug:
 	if ( DAP_debug_isOn && DAP_debug_isOnTeamCheck ) then {[
 		"%1 ASSEMBLING %2 ARTILLERY TEAM > %3 > From %4 on the field, %5 have the requested caliber (%6).",
 		DAP_txtDebugHeader,
@@ -1418,7 +1395,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 		_candApprovedMags = _libraryMags arrayIntersect (getArtilleryAmmo [_x]);
 		// One or more ammo options:
 		if ( count _candApprovedMags > 0 ) then {
-			// Debug message:
+			// Debug:
 			if ( DAP_debug_isOn && ( DAP_debug_isOnTeamCheck || DAP_debug_isOnAmmo ) ) then {
 				["%1 ASSEMBLING %2 ARTILLERY TEAM > %3 > '%4' approved mag types: %5 = %6.",
 				DAP_txtDebugHeader, _tag, _fmCode, _x, count _candApprovedMags, _candApprovedMags] call BIS_fnc_error; sleep 0.5;
@@ -2096,7 +2073,7 @@ THY_fnc_DAP_firemission = {
 				if ( _ctr >= _time + ((abs _x) * 60) ) exitWith {
 					// Function completed:
 					_isReleased = true;
-					// Debug message:
+					// Debug:
 					if DAP_debug_isOn then {
 						systemChat format ["%1 %2 %3 by TIMER (it was %4 minutes).", DAP_txtDebugHeader, _tag, _txt1, _x];
 						// Reading breather:
@@ -2113,7 +2090,7 @@ THY_fnc_DAP_firemission = {
 					if ( triggerActivated _x ) exitWith { 
 						// Function completed:
 						_isReleased = true; 
-						// Debug message:
+						// Debug:
 						if DAP_debug_isOn then {
 							systemChat format ["%1 %2 %3 by TRIGGER (%4).", DAP_txtDebugHeader, _tag, _txt1, _x];
 							// Reading breather:
@@ -2128,7 +2105,7 @@ THY_fnc_DAP_firemission = {
 					if ( !alive _x ) exitWith {
 						// Function completed:
 						_isReleased = true;
-						// Debug message:
+						// Debug:
 						if DAP_debug_isOn then {
 							systemChat format ["%1 %2 %3 by TARGET (%4).", DAP_txtDebugHeader, _tag, _txt1, _x];
 							// Reading breather:

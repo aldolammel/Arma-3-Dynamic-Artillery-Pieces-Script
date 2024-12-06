@@ -1,4 +1,4 @@
-# Arma-3-Dynamic-Artillery-Pieces-Script v1.5.1
+# Arma-3-Dynamic-Artillery-Pieces-Script v1.5.2
 >*Dependencies: none.*
 
 DAP is an Arma 3 script that allows the Mission Editor (you) to create real (or virtual) artillery/mortar fire-missions faster and smarter for one or multiple sides, using Eden marker’s positions and an external fire-missions list where you plan the caliber, ammo type, rounds, cycle of repetition and more. DAP doesn't change any original Arma AI behavior, saving server performance, and preserving the Arma integrity and compatibility with any mod.
@@ -77,6 +77,12 @@ __
 
 ## CHANGELOG
 
+**Dec, 6th 2024 | v1.5.2**
+
+- HOTFIX > Fixed, a specific typo in artillery variable-name ("dapp" or "ddap") was printed out an error;
+- HOTFIX > Fixed, artillery-groups were losing their custom names after v1.5.1;
+- Documentation updated;
+
 **Dec, 5th 2024 | v1.5.1**
 
 - Added the position checker for artillery and target-markers to verify whether they were within the map borders;
@@ -85,6 +91,7 @@ __
 - Improved, if the editor turns off accidentally all sides through the management file, DAP turns the script off automatically;
 - Fixed the error when the editor, for any reason, removes part of the artillery crew;
 - Fixed the behavior where DAP was turning itself off if no artillery for it (Now DAP can be used only for virtual artillery).
+- Documentation updated;
 
 **Dec, 4th 2024 | v1.5**
 

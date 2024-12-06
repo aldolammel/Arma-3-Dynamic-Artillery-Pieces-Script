@@ -38,7 +38,7 @@ if ( !DAP_isOn || !isServer ) exitWith {};
 
     if ( DAP_BLU_isOn && count DAP_targetMrksBLU > 0 ) then {
 
-        // FIRE-MISSIONS PLAN: BLUFORw
+        // FIRE-MISSIONS PLAN: BLUFOR
         // Define each fire-mission should be available for this side. You can add or remove fire-mission rows as you wish.
 
             // Which column means:
