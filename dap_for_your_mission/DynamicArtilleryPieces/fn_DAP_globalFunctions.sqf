@@ -395,6 +395,15 @@ THY_fnc_DAP_pieces_scanner = {
 		if DAP_artill_preventMoving then { (driver _piece) disableAI "MOVE" };
 
 		// ADDING FEATURES:
+		// Adding to ZEUS:
+		if ( DAP_artill_editableByZeus || DAP_debug_isOn ) then {
+			{  // forEach allCurators:
+				// Crew:
+				_x addCuratorEditableObjects [crew _piece, true];
+				// Piece:
+				_x addCuratorEditableObjects [[_piece], true]
+			} forEach allCurators;
+		};
 		// WIP THERMAL SIGNATURE: if DAP_artill_isForcedThermalSignat then { [_piece, [1,0,1]] remoteExec ["setVehicleTiPars"] };  // [engine, wheels, weapon] / 1=hot / 0.5=warm / 0=cool
 
 		// If all validations alright:

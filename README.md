@@ -81,6 +81,7 @@ __
 
 - HOTFIX > Fixed, a specific typo in artillery variable-name ("dapp" or "ddap") was printed out an error;
 - HOTFIX > Fixed, artillery-groups were losing their custom names after v1.5.1;
+- Added option to make all DAP artillery editable by Zeus automatically. If Debug Mode is activated, the pieces will be editable by Zeus too;
 - Documentation updated;
 
 **Dec, 5th 2024 | v1.5.1**
