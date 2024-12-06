@@ -41,6 +41,7 @@ __
 - Custom callsign for each artillery side;
 - Which piece calibers can use CommandChat to report (On/Off);
 - Infinite ammunition (On/Off);
+- Editable by Zeus (On/Off);
 - Prevent artillery-pieces self-propelled to change position (On/Off);
 - Prevent artillery-pieces from starting match with no magazines (On/Off);
 - Fire-mission areas visible on the player map (On/Off)  **WIP**
@@ -81,6 +82,7 @@ __
 
 - HOTFIX > Fixed, a specific typo in artillery variable-name ("dapp" or "ddap") was printed out an error;
 - HOTFIX > Fixed, artillery-groups were losing their custom names after v1.5.1;
+- Added option to Group Leader players see the fire-mission impact zone temporarilly on their maps;
 - Added option to make all DAP artillery editable by Zeus automatically. If Debug Mode is activated, the pieces will be editable by Zeus too;
 - Documentation updated;
 

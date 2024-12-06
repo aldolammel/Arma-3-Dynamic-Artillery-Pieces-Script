@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.5
+// DAP: Dynamic Artillery Pieces v1.5.2
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_fireMissions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
