@@ -44,7 +44,7 @@ __
 - Editable by Zeus (On/Off);
 - Prevent artillery-pieces self-propelled to change position (On/Off);
 - Prevent artillery-pieces from starting match with no magazines (On/Off);
-- Fire-mission areas visible on the player map (On/Off)  **WIP**
+- Fire-mission areas visible on the player map (On/Off);
 - Custom cooldown by caliber among cycles of fire-mission repetition;
 - Pre-defined whitelist of pieces working (Arma, DLCs, CDLCs, RHS, CUP, etc);
 - Pre-defined whitelist of ammunition working (Arma, DLCs, CDLCs, RHS, CUP, etc);
