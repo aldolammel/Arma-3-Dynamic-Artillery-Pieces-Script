@@ -1713,7 +1713,7 @@ THY_fnc_DAP_firemission_schedule = {
 
 THY_fnc_DAP_firing = {
 	// This function makes the specific fire-mission-team shelling down a specific target position once before return to THY_fnc_DAP_fire_management.
-	// Returns true after all alive team member shoot: bool.
+	// Returns true after all alive team members shoot: bool.
 
 	params ["_tag", "_fmTeam", "_fmCode", "_fmUnitLeader", "_fmPieceLeader", "_fmMkrPos", "_rounds", "_magType", "_libraryMags", "_isReporting"];
 	private ["_isNotShooting", "_piece", "_mag", "_piecesShootBefore", "_wasReported", "_countTeamSize" /*, "_wp" */];
