@@ -157,8 +157,8 @@ DAP_isOn = true;                         // Turn on or off the entire script wit
 	DAP_prefix         = toUpper "DAP";  // CAUTION: NEVER include/insert the DAP_spacer character as part of the DAP_prefix too.
 	DAP_spacer         = toUpper "_";    // CAUTION: try do not change it!
 	// Global escape:
-	if !DAP_isOn exitWith {if DAP_debug_isOn then {systemChat format ["%1 The script was turned off manually via 'fn_DAP_management.sqf' file.", DAP_txtWarnHeader]}};
-	if (DAP_isOn && !DAP_BLU_isOn && !DAP_OPF_isOn && !DAP_IND_isOn) exitWith {DAP_isOn=false; systemChat format ["%1 You turned off all sides but you're keeping the 'DAP_isOn' as 'true' in fn_DAP_management.sqf file. To fix it, turn one or more sides 'true', or turn the 'DAP_isOn' to 'false'. The script stopped automatically!", DAP_txtWarnHeader]};
+	if !DAP_isOn exitWith {if DAP_debug_isOn then {publicVariable "DAP_isOn"; systemChat format ["%1 The script was turned off manually via 'fn_DAP_management.sqf' file.", DAP_txtWarnHeader]}};
+	if (DAP_isOn && !DAP_BLU_isOn && !DAP_OPF_isOn && !DAP_IND_isOn) exitWith {DAP_isOn=false; publicVariable "DAP_isOn"; systemChat format ["%1 You turned off all sides but you're keeping the 'DAP_isOn' as 'true' in fn_DAP_management.sqf file. To fix it, turn one or more sides 'true', or turn the 'DAP_isOn' to 'false'. The script stopped automatically!", DAP_txtWarnHeader]};
 	// Declarations - part 2/2:
 	DAP_piecesCaliber_light =
 		// Pieces Light
