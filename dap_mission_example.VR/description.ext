@@ -7,7 +7,7 @@ class Header {
 
 // About
 onLoadName       = "DAP: DYNAMIC ARTILLERY PIECES";
-author           = "thy";
+author           = "thy @aldolammel";
 overviewPicture  = "images\thumb.jpg";	
 onLoadMission    = "Smart creation of fire-missions for Howitzers, MRL's and Mortars.";
 
@@ -39,6 +39,6 @@ cba_settings_hasSettingsFile = 0;
 
 class cfgFunctions 
 {
-	// DAP: DYNAMIC ARTILLERY PIECES v1.5.2
+	// DAP: DYNAMIC ARTILLERY PIECES v1.5.5
 	#include "DynamicArtilleryPieces\THY_DAP_functions.hpp"
 };

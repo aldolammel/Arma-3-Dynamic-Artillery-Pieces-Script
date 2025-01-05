@@ -2,6 +2,6 @@
 
 class cfgFunctions 
 {
-	// DAP: DYNAMIC ARTILLERY PIECES v1.5.2
+	// DAP: DYNAMIC ARTILLERY PIECES v1.5.5
 	#include "DynamicArtilleryPieces\THY_DAP_functions.hpp"
 };

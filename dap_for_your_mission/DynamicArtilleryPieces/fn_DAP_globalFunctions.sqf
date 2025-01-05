@@ -1,4 +1,4 @@
-// DAP: Dynamic Artillery Pieces v1.5.2
+// DAP: Dynamic Artillery Pieces v1.5.5
 // File: your_mission\DynamicArtilleryPieces\fnc_DAP_globalFunctions.sqf
 // Documentation: https://github.com/aldolammel/Arma-3-Dynamic-Artillery-Pieces-Script/blob/main/_DAP_Script_Documentation.pdf
 // by thy (@aldolammel)
@@ -11,7 +11,7 @@ if !DAP_isOn exitWith {};
 // STRUCTURE OF A FUNCTION BY THY:
 /* THY_fnc_DAP_name_of_the_function = {
 	// This function <doc string>.
-	// Returns nothing <or varname + type>
+	// Returns nothing <or varname + type> <or Returns nothing, but open a new thread.>
 
 	params ["", "", "", ""];
 	private ["", "", ""];
@@ -306,7 +306,7 @@ THY_fnc_DAP_pieces_scanner = {
 	// Debug:
 	if DAP_debug_isOn then { systemChat format ["%1 Artillery-pieces found: %2 from DAP.", DAP_txtDebugHeader, count _possiblePieces] };
 	// If editor probably is using Virtual artillery:
-	if ( count _possiblePieces isEqualTo 0 ) exitWith {
+	if ( _possiblePieces isEqualTo [] ) exitWith {
 		// Debug:
 		systemChat format ["%1 ARTILLERY-PIECES > NO REAL artillery-pieces were found (Howitzers or MRL's or Mortars). It's okay if you're using only VIRTUAL artillery. Just checking.",
 		DAP_txtDebugHeader];
@@ -331,7 +331,7 @@ THY_fnc_DAP_pieces_scanner = {
 		};
 	} forEachReversed _possiblePieces;
 	// Escape > All _possiblePieces deleted during position check:
-	if ( count _possiblePieces isEqualTo 0 ) exitWith {
+	if ( _possiblePieces isEqualTo [] ) exitWith {
 		// Warning message:
 		systemChat format ["%1 ARTILLERY-PIECES > Looks like all artillery-pieces available were out of the map borders and were deleted. Fix it!",
 		DAP_txtWarnHeader];
@@ -465,7 +465,7 @@ THY_fnc_DAP_marker_scanner = {
 	// Selecting the relevant markers:
 	_possibleMkrs = allMapMarkers select { toUpper _x find (_prefix + _spacer) isNotEqualTo -1 };
 	// Escape > If no _possibleMkrs found:
-	if ( count _possibleMkrs isEqualTo 0 ) exitWith {
+	if ( _possibleMkrs isEqualTo [] ) exitWith {
 		// Warning message:
 		systemChat format ["%1 This mission still HAS NO possible DAP MARKERS to be loaded. DAP markers must have their structure names like '%2%3BLU%3sectorLetter%3anynumber' or '%2%3OPF%3A%3anynumber' or '%2%3IND%3E%3anynumber' for example.",
 		DAP_txtWarnHeader, _prefix, _spacer];
@@ -488,7 +488,7 @@ THY_fnc_DAP_marker_scanner = {
 		// check if the marker name has DAP_spacer character enough in its string composition:
 		_nameStructure = [2, _mkr, _prefix, _spacer] call THY_fnc_DAP_name_splitter;
 		// Escape > if invalid structure, skip to the next marker:
-		if ( count _nameStructure isEqualTo 0 ) then { continue };
+		if ( _nameStructure isEqualTo [] ) then { continue };
 		// Check the type of marker:
 		_isValidShape = [_mkr] call THY_fnc_DAP_marker_shape;
 		// Escape > if _isValidShape returns false, skip to the next marker:
@@ -547,7 +547,7 @@ THY_fnc_DAP_marker_scanner = {
 
 	// By actived side, check if there is, at least, one fire marker available:
 	if DAP_BLU_isOn then {
-		if ( count (_confirmedMkrs # 0) isEqualTo 0 ) then {
+		if ( (_confirmedMkrs # 0) isEqualTo [] ) then {
 			// Turn the side off:
 			DAP_BLU_isOn = false;
 			// Update the Public variable:
@@ -558,7 +558,7 @@ THY_fnc_DAP_marker_scanner = {
 		};
 	};
 	if DAP_OPF_isOn then {
-		if ( count (_confirmedMkrs # 1) isEqualTo 0 ) then {
+		if ( (_confirmedMkrs # 1) isEqualTo [] ) then {
 			DAP_OPF_isOn = false;
 			publicVariable "DAP_OPF_isOn";
 			systemChat format ["%1 TARGET MARKERS > NO OPF TARGET MARKER FOUND. Check the documentation or turn 'DAP_OPF_isOn' to 'false' in 'fn_DAP_management.sqf' file! For now, DAP turned off Fire-missions capacity for OPF!",
@@ -566,7 +566,7 @@ THY_fnc_DAP_marker_scanner = {
 		};
 	};
 	if DAP_IND_isOn then {
-		if ( count (_confirmedMkrs # 2) isEqualTo 0 ) then {
+		if ( (_confirmedMkrs # 2) isEqualTo [] ) then {
 			DAP_IND_isOn = false;
 			publicVariable "DAP_IND_isOn";
 			systemChat format ["%1 TARGET MARKERS > NO IND TARGET MARKER FOUND. Check the documentation or turn 'DAP_IND_isOn' to 'false' in 'fn_DAP_management.sqf' file! For now, DAP turned off Fire-missions capacity for IND!",
@@ -835,7 +835,7 @@ THY_fnc_DAP_firemission_validation = {
 		true;
 	};
 	// Escape > If non-existent target-markers, abort:
-	if ( isNil { typeName _targetMkrs isEqualTo "ARRAY" } || count _targetsInfo isEqualTo 0 ) exitWith {
+	if ( isNil { typeName _targetMkrs isEqualTo "ARRAY" } || _targetsInfo isEqualTo [] ) exitWith {
 		// Warning message:
 		systemChat format ["%1 TARGET MARKERS > One or more %2 fire-mission rows got an invalid target-markers column, may be has its '[ ]' empty. %3. %4!",
 		DAP_txtWarnHeader, _tag, _txt1, _txt2]; sleep 5;
@@ -859,7 +859,7 @@ THY_fnc_DAP_firemission_validation = {
 		true;
 	};
 	// Escape > If no target-markers, abort:
-	if ( count _targetMkrs isEqualTo 0 ) exitWith {
+	if ( _targetMkrs isEqualTo [] ) exitWith {
 		// Warning message:
 		systemChat format ["%1 TARGET MARKERS > There IS NO %2 MARKER to create a %2 fire-mission. Check if (e.g.) 'DAP_targetMrks%2' is spelled correctly and make sure there's at least 1 %2 target-marker placed on Eden. %3!", 
 		DAP_txtWarnHeader, _tag, _txt2]; sleep 5;
@@ -959,7 +959,7 @@ THY_fnc_DAP_firemission_validation = {
 		true;
 	};
 	// Escape > If _fireTriggers is empty, abort:
-	if ( count _fireTriggers isEqualTo 0 ) exitWith {
+	if ( _fireTriggers isEqualTo [] ) exitWith {
 		// Warning message:
 		systemChat format ["%1 FIRE-MISSION TRIGGER > At least one %2 fire-mission row has no any type of trigger defined. %3. %4. %5!",
 		DAP_txtWarnHeader, _tag, _txt3, _txt1, _txt2]; sleep 5;
@@ -1116,7 +1116,7 @@ THY_fnc_DAP_rearming_pieces = {
 			if ( _ctr isEqualTo 4 ) then { playSound3D ["a3\sounds_f\sfx\ui\vehicles\vehicle_rearm.wss", _x]; _ctr = 0;
 			} else { playSound3D ["a3\sounds_f\characters\cutscenes\concrete_acts_walkingchecking.wss", _x] };
 			// If any piece isn't operational:
-			if ( !alive _x || count (crew _x) isEqualTo 0 ) then {
+			if ( !alive _x || (crew _x) isEqualTo [] ) then {
 				["REMOVE", _side, _x] call THY_fnc_DAP_out_of_ammo_list;
 				_piecesNeedRearm deleteAt _forEachIndex;
 			};
@@ -1148,7 +1148,7 @@ THY_fnc_DAP_rearming_pieces = {
 		["%1 REARMING > %2-FIRE-MISSION > %3!",
 		DAP_txtDebugHeader,
 		_fmCode,
-		if ( count _piecesNeedRearm isEqualTo 0 ) then {
+		if ( _piecesNeedRearm isEqualTo [] ) then {
 			format ["All %1 pieces are ready", _fmTeam];
 		} else {
 			format ["%1 still has %2 piece(s) that not rearmed", _fmTeam, count _piecesNeedRearm];
@@ -1305,7 +1305,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 		};
 	};
 	// Escape:
-	if ( count _freePieces isEqualTo 0 ) exitWith {
+	if ( _freePieces isEqualTo [] ) exitWith {
 		// If has alive piece but they are busy with fire-mission:
 		if _isReporting then {
 			if ( !(["HAS_NO_FM_ONGOING", _side] call THY_fnc_DAP_firemission_schedule) ) then {
@@ -1346,7 +1346,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 		_preCandidates = _freePieces;
 	};
 	// Escape > If no side pieces available:
-	if ( count _preCandidates isEqualTo 0 ) exitWith {
+	if ( _preCandidates isEqualTo [] ) exitWith {
 		// Side command message:
 		if _isReporting then {
 			if ( !(["HAS_NO_FM_ONGOING", _side] call THY_fnc_DAP_firemission_schedule) ) then {
@@ -1381,7 +1381,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 		] call BIS_fnc_error; sleep 3;
 	};
 	// Escape > If no side candidate-pieces available:
-	if ( count _candidates isEqualTo 0 ) exitWith {
+	if ( _candidates isEqualTo [] ) exitWith {
 		// Side command message:
 		if _isReporting then { 
 			[_side, "BASE"] commandChat format [
@@ -1417,7 +1417,7 @@ THY_fnc_DAP_assembling_firemission_team = {
 		};
 	} forEach _candidates;
 	// Escape > If no side finalist-pieces available:
-	if ( count _finalists isEqualTo 0 ) exitWith {
+	if ( _finalists isEqualTo [] ) exitWith {
 		// Side command message:
 		if _isReporting then { 
 			[_side, "BASE"] commandChat format [
@@ -2157,7 +2157,7 @@ THY_fnc_DAP_firemission = {
 		_libraryMags  = _assemblyInfo # 0;
 		_chosenOnes   = _assemblyInfo # 1;
 		// Escape > No team available:
-		if ( count _chosenOnes isEqualTo 0 ) then { breakTo "earlyreturn" };
+		if ( _chosenOnes isEqualTo [] ) then { breakTo "earlyreturn" };
 		// Declaring the team (Arma format = group):
 		_fmTeam      = group (_chosenOnes # 0);  // Output e.g.: B BLU FIRE SUPPORT-2
 		_fmTeamDebug = str _fmTeam; // Debug purposes.
